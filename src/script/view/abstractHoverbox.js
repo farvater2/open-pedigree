@@ -1,6 +1,7 @@
 import { Timer } from 'pedigree/model/helpers';
 import { generateOrb } from 'pedigree/view/graphicHelpers';
 import PedigreeEditorParameters from 'pedigree/pedigreeEditorParameters';
+import { translate } from 'pedigree/translation';
 
 /**
  * AbstractHoverbox is an abstract class for all the UI elements and graphics surrounding a node on the canvas (a Person
@@ -357,7 +358,7 @@ var AbstractHoverbox = Class.create({
     var x = this.getX() + this.getWidth() - 20 - this.getWidth()/40;
     var y = this.getY() + this.getHeight()/40;
     this.createButton(x, y, editor.getView().__menuButton_svgPath, editor.getView().__menuButton_BBox,
-      attributes, action, 'menu-trigger', 'node properties');
+      attributes, action, 'menu-trigger', translate('node properties'));
 
   },
   /**
@@ -377,7 +378,7 @@ var AbstractHoverbox = Class.create({
     var x = this.getX() + this.getWidth() - 20 - this.getWidth()/40;
     var y = this.getY() + this.getHeight()/40;
     this.createButton(x, y, editor.getView().__deleteButton_svgPath, editor.getView().__deleteButton_BBox,
-      attributes, action, 'delete', 'remove node');
+      attributes, action, 'delete', translate('remove node'));
   },
 
   /**

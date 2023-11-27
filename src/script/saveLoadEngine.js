@@ -7,7 +7,7 @@ import TemplateSelector from 'pedigree/view/templateSelector';
  * @constructor
  */
 
-function unescapeRestData (data) {
+function unescapeRestData(data) {
   // http://stackoverflow.com/questions/4480757/how-do-i-unescape-html-entities-in-js-change-lt-to
   var tempNode = document.createElement('div');
   tempNode.innerHTML = data.replace(/&amp;/, '&');
@@ -99,51 +99,57 @@ function canvasToSvg(element) {
     .replaceAll(new RegExp(uriAsRegex(window.location.href), 'g'), '');
 }
 
-var SaveLoadEngine = Class.create( {
-  _defaultSaveFunction: function(args) {
+
+var SaveLoadEngine = Class.create({
+  _defaultSaveFunction: function (args) {
     var me = this;
 
     new Ajax.Request(args.patientDataUrl, {
       method: 'POST',
-      onCreate: function() {
+      onCreate: function () {
+        console.log('args', args);
         args.setSaveInProgress(true);
       },
-      onComplete: function() {
+      onComplete: function () {
         args.setSaveInProgress(false);
         me._saveInProgress = false;
       },
-      onSuccess: function() {},
-      parameters: {'property#data': args.jsonData, 'property#image': args.svgData }
+      onSuccess: function () { },
+      parameters: { 'id_patient_genetic': args.id_patient_genetic, 'last_name': JSON.parse(args.jsonData).GG[0].prop.lName, 'first_name': JSON.parse(args.jsonData).GG[0].prop.fName, 'patronymic': JSON.parse(args.jsonData).GG[0].prop.patronymic, 'pedigree_data': args.jsonData, 'pedigree_svg': args.svgData }
     });
   },
 
-  _defaultLoadFunction: function(args) {
+  _defaultLoadFunction: function (args) {
     var _this = this;
     var didLoadData = false;
 
+    console.log('_defaultLoadFunction');
     new Ajax.Request(args.patientDataUrl, {
       method: 'GET',
-      onCreate: function() {
+      onCreate: function () {
         document.fire('pedigree:load:start');
       },
-      onSuccess: function(response) {
-        //console.log("Data from LOAD: " + JSON.stringify(response));
-        //console.log("[Data from LOAD]");
-        if (response && response.responseXML) {
-          var rawdata  = getSubSelectorTextFromXML(response.responseXML, 'property', 'name', 'data', 'value');
-          var jsonData = unescapeRestData(rawdata);
-          if (jsonData.trim()) {
-            console.log('[LOAD] recived JSON: ' + JSON.stringify(jsonData));
-
-            args.onSuccess(jsonData);
-
-            jsonData = editor.getVersionUpdater().updateToCurrentVersion(jsonData);
-
-            didLoadData = true;
+      onSuccess: function (response) {
+        try {
+          //console.log("Data from LOAD: " + JSON.stringify(response));
+          //console.log("[Data from LOAD]");
+          if (response && response.responseText) {
+            var rawdata = JSON.parse(response.responseText)[0].pedigree_data;//getSubSelectorTextFromXML(response.responseXML, 'property', 'name', 'data', 'value');
+            var jsonData = unescapeRestData(rawdata);
+            if (jsonData.trim()) {
+              console.log('[LOAD] recived JSON: ' + JSON.stringify(jsonData));
+              args.onSuccess(jsonData);
+              //jsonData = editor.getVersionUpdater().updateToCurrentVersion(jsonData);
+              //console.log('editor.getVersionUpdater().updateToCurrentVersion(jsonData)');
+              editor.id_patient_genetic = JSON.parse(response.responseText)[0].id_patient_genetic;
+              didLoadData = true;
+            }
           }
+        } catch (e) {
+          console.error(e);
         }
       },
-      onComplete: function() {
+      onComplete: function () {
         if (!didLoadData) {
           // If load failed, just open templates
           new TemplateSelector(true);
@@ -152,12 +158,19 @@ var SaveLoadEngine = Class.create( {
     });
   },
 
-  initialize: function(options) {
+  initialize: function (options) {
     this._saveFunction = options.save || this._defaultSaveFunction;
     this._loadFunction = options.load || this._defaultLoadFunction;
     this._customBackend = (this._saveFunction.toString() !== this._defaultSaveFunction.toString())
       && (this._loadFunction.toString() !== this._defaultLoadFunction.toString());
     this._saveInProgress = false;
+
+    let id_patient_genetic = this.getUrlParameter('id_patient_genetic');
+    if (id_patient_genetic) {
+     // editor.id_patient_genetic = id_patient_genetic;
+      this.load('/pedigree/ajax.jsp?action=getGenogram&id_patient_genetic=' + id_patient_genetic);
+     // this.load('/pedigree/ajax.jsp?action=getGenogram&id_patient_genetic=' + id_patient_genetic);
+    }
   },
 
   /**
@@ -165,17 +178,17 @@ var SaveLoadEngine = Class.create( {
      *
      * @return Serialization data for the entire graph
      */
-  serialize: function() {
+  serialize: function () {
     return editor.getGraph().toJSON();
   },
 
-  createGraphFromSerializedData: function(JSONString, noUndo, centerAround0) {
+  createGraphFromSerializedData: function (JSONString, noUndo, centerAround0) {
     console.log('---- load: parsing data ----', JSONString);
     document.fire('pedigree:load:start');
 
     try {
       var changeSet = editor.getGraph().fromJSON(JSONString);
-    } catch(err) {
+    } catch (err) {
       console.log('ERROR loading the graph: ', err);
       alert('Error loading the graph');
       document.fire('pedigree:graph:clear');
@@ -198,7 +211,7 @@ var SaveLoadEngine = Class.create( {
     document.fire('pedigree:load:finish');
   },
 
-  createGraphFromImportData: function(importString, importType, importOptions, noUndo, centerAround0) {
+  createGraphFromImportData: function (importString, importType, importOptions, noUndo, centerAround0) {
     console.log('---- import: parsing data ----');
     document.fire('pedigree:load:start');
 
@@ -207,7 +220,7 @@ var SaveLoadEngine = Class.create( {
       if (changeSet == null) {
         throw 'unable to create a pedigree from imported data';
       }
-    } catch(err) {
+    } catch (err) {
       alert('Error importing pedigree: ' + err);
       document.fire('pedigree:load:finish');
       return;
@@ -232,11 +245,11 @@ var SaveLoadEngine = Class.create( {
     document.fire('pedigree:load:finish');
   },
 
-  setSaveInProgress: function(status) {
+  setSaveInProgress: function (status) {
     this._saveInProgress = status;
   },
 
-  save: function(patientDataUrl) {
+  save: function (patientDataUrl) {
     if (this._saveInProgress) {
       return;
     }   // Don't send parallel save requests
@@ -248,11 +261,12 @@ var SaveLoadEngine = Class.create( {
     var image = $('canvas');
     var background = image.getElementsByClassName('panning-background')[0];
     var backgroundPosition = background.nextSibling;
-    var backgroundParent =  background.parentNode;
+    var backgroundParent = background.parentNode;
     backgroundParent.removeChild(background);
-    
+
     this._saveFunction({
       patientDataUrl: patientDataUrl,
+      id_patient_genetic: editor.id_patient_genetic || new URLSearchParams(window.location.search).get('id_patient_genetic'),
       jsonData: jsonData,
       setSaveInProgress: this.setSaveInProgress,
       svgData: canvasToSvg(image)
@@ -260,14 +274,15 @@ var SaveLoadEngine = Class.create( {
     backgroundParent.insertBefore(background, backgroundPosition);
   },
 
-  _displayData: function(jsonData) {
+  _displayData: function (jsonData) {
     // update the json to the current version, then load it in the current interface 
+    console.log('2editor.getVersionUpdater().updateToCurrentVersion(jsonData)');
     this.createGraphFromSerializedData(
       editor.getVersionUpdater().updateToCurrentVersion(jsonData)
     );
   },
 
-  load: function(patientDataUrl) {
+  load: function (patientDataUrl) {
     console.log('initiating load process');
     if (patientDataUrl || this._customBackend) {
       this._loadFunction({
@@ -276,8 +291,24 @@ var SaveLoadEngine = Class.create( {
         onFailure: () => { new TemplateSelector(true); }
       });
     } else {
-      new TemplateSelector(true);
+      //   new TemplateSelector(true);
     }
+  },
+
+  getUrlParameter: function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+      sURLVariables = sPageURL.split('&'),
+      sParameterName,
+      i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+
+      if (sParameterName[0] === sParam) {
+        return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+      }
+    }
+    return false;
   }
 });
 

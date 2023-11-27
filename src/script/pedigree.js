@@ -9,6 +9,8 @@ import HPOLegend from 'pedigree/view/hpoLegend';
 import GeneLegend from 'pedigree/view/geneLegend';
 import ExportSelector from 'pedigree/view/exportSelector';
 import ImportSelector from 'pedigree/view/importSelector';
+import LoadSelector from 'pedigree/view/loadSelector';
+import ViewSettings from 'pedigree/view/viewSettings';
 import NodeMenu from 'pedigree/view/nodeMenu';
 import NodetypeSelectionBubble from 'pedigree/view/nodetypeSelectionBubble';
 import TemplateSelector from 'pedigree/view/templateSelector';
@@ -16,6 +18,7 @@ import ActionStack from 'pedigree/undoRedo';
 import VersionUpdater from 'pedigree/versionUpdater';
 import PedigreeEditorParameters from 'pedigree/pedigreeEditorParameters';
 import DefaultFhirTerminologyHelper from 'pedigree/DefaultFhirTerminologyHelper';
+import { translate } from 'pedigree/translation';
 
 import '../style/editor.css';
 
@@ -72,9 +75,11 @@ var PedigreeEditor = Class.create({
     this._actionStack = new ActionStack();
     this._templateSelector = new TemplateSelector();
     this._importSelector = new ImportSelector();
+    this._loadSelector = new LoadSelector();
     this._exportSelector = new ExportSelector();
     this._versionUpdater = new VersionUpdater();
     this._saveLoadEngine = new SaveLoadEngine(backend);
+    this._viewSettings = new ViewSettings();
 
     // load proband data and load the graph after proband data is available
     this._saveLoadEngine.load(patientDataUrl, this._saveLoadEngine);
@@ -99,10 +104,47 @@ var PedigreeEditor = Class.create({
 
     var saveButton = $('action-save');
     saveButton && saveButton.on('click', function(event) {
+      var _patientDataUrl = '/pedigree/ajax.jsp?action=upsertGenogram';
       editor.getView().unmarkAll();
-      if (patientDataUrl) {
-        editor.getSaveLoadEngine().save(patientDataUrl);
+      if (_patientDataUrl) {
+        editor.getSaveLoadEngine().save(_patientDataUrl);
       }
+    });
+
+    var loadButton = $('action-load');
+    loadButton && loadButton.on('click', function(event) {
+      editor.getLoadSelector().show();
+      /*editor.getView().unmarkAll();
+      if (patientDataUrl) {
+        editor.getSaveLoadEngine().load(patientDataUrl);
+      }*/
+    });
+
+    var settingsButton = $('action-settings');
+    settingsButton && settingsButton.on('click', function(event) {
+      console.log('settingsButton click');
+      editor.getViewSettings().show();
+    });
+    
+    var languageButton = $('action-language');
+    languageButton && languageButton.on('click', function(event) {
+      console.log('languageButton click');
+
+      let language = PedigreeEditorParameters.getSetting('language');
+
+      if (language === 'rus') {
+        language = 'eng';
+      } else {
+        language = 'rus';
+      }
+      PedigreeEditorParameters.saveSettings({language})
+      
+      location.reload();
+      return false;
+      /*editor.getView().unmarkAll();
+      if (_patientDataUrl) {
+        editor.getSaveLoadEngine().save(_patientDataUrl);
+      }*/
     });
 
     var templatesButton = $('action-templates');
@@ -345,6 +387,22 @@ var PedigreeEditor = Class.create({
   },
 
   /**
+     * @method getLoadtSelector
+     * @return {LoadSelector}
+     */
+  getLoadSelector: function() {
+    return this._loadSelector;
+  },
+
+  /**
+     * @method getLoadtSelector
+     * @return {LoadSelector}
+     */
+  getViewSettings: function() {
+    return this._viewSettings;
+  },
+
+  /**
      * Returns true if any of the node menus are visible
      * (since some UI interactions should be disabled while menu is active - e.g. mouse wheel zoom)
      *
@@ -372,172 +430,189 @@ var PedigreeEditor = Class.create({
         'name' : 'identifier',
         'label' : '',
         'type'  : 'hidden',
-        'tab': 'Personal'
+        'tab': translate('Personal')
       },
       {
         'name' : 'gender',
-        'label' : 'Gender',
+        'label' : translate('Gender'),
         'type' : 'radio',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'columns': 3,
         'values' : [
-          { 'actual' : 'M', 'displayed' : 'Male' },
-          { 'actual' : 'F', 'displayed' : 'Female' },
-          { 'actual' : 'U', 'displayed' : 'Unknown' }
+          { 'actual' : 'M', 'displayed' : translate('Male') },
+          { 'actual' : 'F', 'displayed' : translate('Female') },
+          { 'actual' : 'U', 'displayed' : translate('Unknown') }
         ],
         'default' : 'U',
         'function' : 'setGender'
       },
       {
-        'name' : 'first_name',
-        'label': 'First name',
-        'type' : 'text',
-        'tab': 'Personal',
-        'function' : 'setFirstName'
-      },
-      {
         'name' : 'last_name',
-        'label': 'Last name',
+        'label': translate('Last name'),
         'type' : 'text',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'function' : 'setLastName'
       },
       {
-        'name' : 'external_id',
-        'label': 'Identifier',
+        'name' : 'first_name',
+        'label': translate('First name'),
         'type' : 'text',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
+        'function' : 'setFirstName'
+      },
+      {
+        'name' : 'patronymic',
+        'label': translate('Patronymic'),
+        'type' : 'text',
+        'tab': translate('Personal'),
+        'function' : 'setPatronymic'
+      },
+      {
+        'name' : 'external_id',
+        'label': translate('Identifier'),
+        'type' : 'text',
+        'tab': translate('Personal'),
         'function' : 'setExternalID'
       },
       {
         'name' : 'carrier',
-        'label' : 'Carrier status',
+        'label' : translate('Carrier status'),
         'type' : 'radio',
-        'tab': 'Clinical',
+        'tab': translate('Clinical'),
         'values' : [
-          { 'actual' : '', 'displayed' : 'Not affected' },
-          { 'actual' : 'carrier', 'displayed' : 'Carrier' },
-          { 'actual' : 'affected', 'displayed' : 'Affected' },
-          { 'actual' : 'presymptomatic', 'displayed' : 'Pre-symptomatic' }
+          { 'actual' : '', 'displayed' : translate('Not affected') },
+          { 'actual' : 'carrier', 'displayed' : translate('Carrier') },
+          { 'actual' : 'affected', 'displayed' : translate('Affected') },
+          { 'actual' : 'presymptomatic', 'displayed' : translate('Pre-symptomatic') }
         ],
         'default' : '',
         'function' : 'setCarrierStatus'
       },
       {
         'name' : 'evaluated',
-        'label' : 'Documented evaluation',
+        'label' :  translate('Documented evaluation'),
         'type' : 'checkbox',
-        'tab': 'Clinical',
+        'tab': translate('Clinical'),
         'function' : 'setEvaluated'
       },
       {
         'name' : 'disorders',
-        'label' : 'Disorders',
+        'label' : translate('Disorders'),
         'type' : 'disease-picker',
-        'tab': 'Clinical',
+        'tab': translate('Clinical'),
         'function' : 'setDisorders'
       },
       {
         'name' : 'candidate_genes',
-        'label' : 'Genes',
+        'label' : translate('Genes'),
         'type' : 'gene-picker',
-        'tab': 'Clinical',
+        'tab': translate('Clinical'),
         'function' : 'setGenes'
       },
       {
         'name' : 'hpo_positive',
-        'label' : 'Phenotypic features',
+        'label' : translate('Phenotypic features'),
         'type' : 'hpo-picker',
-        'tab': 'Clinical',
+        'tab': translate('Clinical'),
         'function' : 'setHPO'
       },
       {
         'name' : 'date_of_birth',
-        'label' : 'Date of birth',
+        'label' : translate('Date of birth'),
         'type' : 'date-picker',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'format' : 'dd/MM/yyyy',
         'function' : 'setBirthDate'
       },
       {
         'name' : 'date_of_death',
-        'label' : 'Date of death',
+        'label' : translate('Date of death'),
         'type' : 'date-picker',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'format' : 'dd/MM/yyyy',
         'function' : 'setDeathDate'
       },
       {
+        'name' : 'age_of_death',
+        'label' : translate('Age'),
+        'type' : 'select',
+        'tab': translate('Personal'),
+        'range' : {'start': 0, 'end': 100, 'item' : [translate('year'), translate('years')]},
+        'range_ru' : {'start': 0, 'end': 100, 'item' : ['год','года', 'лет']},
+        'nullValue' : true,
+        'function' : 'setDeathAge'
+      },
+      {
         'name' : 'state',
-        'label' : 'Individual is',
+        'label' : translate('Individual is'),
         'type' : 'radio',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'columns': 3,
         'values' : [
-          { 'actual' : 'alive', 'displayed' : 'Alive' },
-          { 'actual' : 'stillborn', 'displayed' : 'Stillborn' },
-          { 'actual' : 'deceased', 'displayed' : 'Deceased' },
-          { 'actual' : 'miscarriage', 'displayed' : 'Miscarriage' },
-          { 'actual' : 'unborn', 'displayed' : 'Unborn' },
-          { 'actual' : 'aborted', 'displayed' : 'Aborted' }
+          { 'actual' : 'alive', 'displayed' : translate('Alive') },
+          { 'actual' : 'stillborn', 'displayed' : translate('Stillborn') },
+          { 'actual' : 'deceased', 'displayed' : translate('Deceased') },
+          { 'actual' : 'miscarriage', 'displayed' : translate('Miscarriage') },
+          { 'actual' : 'unborn', 'displayed' : translate('Unborn') },
+          { 'actual' : 'aborted', 'displayed' : translate('Aborted') }
         ],
         'default' : 'alive',
         'function' : 'setLifeStatus'
       },
       {
         'name' : 'gestation_age',
-        'label' : 'Gestation age',
+        'label' : translate('Gestation age'),
         'type' : 'select',
-        'tab': 'Personal',
-        'range' : {'start': 0, 'end': 50, 'item' : ['week', 'weeks']},
+        'tab': translate('Personal'),
+        'range' : {'start': 0, 'end': 50, 'item' : [translate('week'), translate('weeks')]},
         'nullValue' : true,
         'function' : 'setGestationAge'
       },
       {
-        'label' : 'Heredity options',
+        'label' : translate('Heredity options'),
         'name' : 'childlessSelect',
-        'values' : [{'actual': 'none', displayed: 'None'},{'actual': 'childless', displayed: 'Childless'},{'actual': 'infertile', displayed: 'Infertile'}],
+        'values' : [{'actual': 'none', displayed: translate('None')},{'actual': 'childless', displayed: translate('Childless')},{'actual': 'infertile', displayed: translate('Infertile')}],
         'type' : 'select',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'function' : 'setChildlessStatus'
       },
       {
         'name' : 'adopted',
-        'label' : 'Adopted',
+        'label' : translate('Adopted'),
         'type' : 'checkbox',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'function' : 'setAdopted'
       },
       {
         'name' : 'monozygotic',
-        'label' : 'Monozygotic twin',
+        'label' : translate('Monozygotic twin'),
         'type' : 'checkbox',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'function' : 'setMonozygotic'
       },
       {
         'name' : 'nocontact',
-        'label' : 'Not in contact with proband',
+        'label' : translate('Not in contact with proband'),
         'type' : 'checkbox',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'function' : 'setLostContact'
       },
       {
         'name' : 'placeholder',
-        'label' : 'Placeholder node',
+        'label' : translate('Placeholder node'),
         'type' : 'checkbox',
-        'tab': 'Personal',
+        'tab': translate('Personal'),
         'function' : 'makePlaceholder'
       },
       {
         'name' : 'comments',
-        'label' : 'Comments',
+        'label' : translate('Comments'),
         'type' : 'textarea',
-        'tab': 'Clinical',
+        'tab': translate('Clinical'),
         'rows' : 2,
         'function' : 'setComments'
       }
-    ], ['Personal', 'Clinical']);
+    ], [translate('Personal'), translate('Clinical')]);
   },
 
   /**
@@ -567,20 +642,20 @@ var PedigreeEditor = Class.create({
       },
       {
         'name' : 'gender',
-        'label' : 'Gender',
+        'label' : translate('Gender'),
         'type' : 'radio',
         'columns': 3,
         'values' : [
-          { 'actual' : 'M', 'displayed' : 'Male' },
-          { 'actual' : 'F', 'displayed' : 'Female' },
-          { 'actual' : 'U', 'displayed' : 'Unknown' }
+          { 'actual' : 'M', 'displayed' : translate('Male') },
+          { 'actual' : 'F', 'displayed' : translate('Female') },
+          { 'actual' : 'U', 'displayed' : translate('Unknown') }
         ],
         'default' : 'U',
         'function' : 'setGender'
       },
       {
         'name' : 'numInGroup',
-        'label': 'Number of persons in this group',
+        'label': translate('Number of persons in this group'),
         'type' : 'select',
         'values' : [{'actual': 1, displayed: 'N'}, {'actual': 2, displayed: '2'}, {'actual': 3, displayed: '3'},
           {'actual': 4, displayed: '4'}, {'actual': 5, displayed: '5'}, {'actual': 6, displayed: '6'},
@@ -589,45 +664,45 @@ var PedigreeEditor = Class.create({
       },
       {
         'name' : 'external_ids',
-        'label': 'Identifier(s)',
+        'label': translate('Identifier(s)'),
         'type' : 'text',
         'function' : 'setExternalID'
       },
       {
         'name' : 'disorders',
-        'label' : 'Known disorders<br>(common to all individuals in the group)',
+        'label' : translate('Known disorders<br>(common to all individuals in the group)'),
         'type' : 'disease-picker',
         'function' : 'setDisorders'
       },
       {
         'name' : 'comments',
-        'label' : 'Comments',
+        'label' : translate('Comments'),
         'type' : 'textarea',
         'rows' : 2,
         'function' : 'setComments'
       },
       {
         'name' : 'state',
-        'label' : 'All individuals in the group are',
+        'label' : translate('All individuals in the group are'),
         'type' : 'radio',
         'values' : [
-          { 'actual' : 'alive', 'displayed' : 'Alive' },
-          { 'actual' : 'aborted', 'displayed' : 'Aborted' },
-          { 'actual' : 'deceased', 'displayed' : 'Deceased' },
-          { 'actual' : 'miscarriage', 'displayed' : 'Miscarriage' }
+          { 'actual' : 'alive', 'displayed' : translate('Alive') },
+          { 'actual' : 'aborted', 'displayed' : translate('Aborted') },
+          { 'actual' : 'deceased', 'displayed' : translate('Deceased') },
+          { 'actual' : 'miscarriage', 'displayed' : translate('Miscarriage') }
         ],
         'default' : 'alive',
         'function' : 'setLifeStatus'
       },
       {
         'name' : 'evaluatedGrp',
-        'label' : 'Documented evaluation',
+        'label' : translate('Documented evaluation'),
         'type' : 'checkbox',
         'function' : 'setEvaluated'
       },
       {
         'name' : 'adopted',
-        'label' : 'Adopted',
+        'label' : translate('Adopted'),
         'type' : 'checkbox',
         'function' : 'setAdopted'
       }
@@ -655,27 +730,27 @@ var PedigreeEditor = Class.create({
     var _this = this;
     return new NodeMenu([
       {
-        'label' : 'Heredity options',
+        'label' : translate('Heredity options'),
         'name' : 'childlessSelect',
-        'values' : [{'actual': 'none', displayed: 'None'},{'actual': 'childless', displayed: 'Childless'},{'actual': 'infertile', displayed: 'Infertile'}],
+        'values' : [{'actual': 'none', displayed: translate('None')},{'actual': 'childless', displayed: translate('Childless')},{'actual': 'infertile', displayed: translate('Infertile')}],
         'type' : 'select',
         'function' : 'setChildlessStatus'
       },
       {
         'name' : 'consangr',
-        'label' : 'Consanguinity of this relationship',
+        'label' : translate('Consanguinity of this relationship'),
         'type' : 'radio',
         'values' : [
-          { 'actual' : 'A', 'displayed' : 'Automatic' },
-          { 'actual' : 'Y', 'displayed' : 'Yes' },
-          { 'actual' : 'N', 'displayed' : 'No' }
+          { 'actual' : 'A', 'displayed' : translate('Automatic') },
+          { 'actual' : 'Y', 'displayed' : translate('Yes') },
+          { 'actual' : 'N', 'displayed' : translate('No') }
         ],
         'default' : 'A',
         'function' : 'setConsanguinity'
       },
       {
         'name' : 'broken',
-        'label' : 'Separated',
+        'label' : translate('Separated'),
         'type' : 'checkbox',
         'function' : 'setBrokenStatus'
       }

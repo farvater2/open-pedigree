@@ -863,9 +863,13 @@ PedigreeImport.initFromGEDCOM = function(inputText, markEvaluated, saveIDAsExter
           var nameParts = getFirstValue(nextPerson[property]).split('/');
           var firstName = nameParts[0].replace(/^\s+|\s+$/g, '');
           var lastName  = nameParts.length > 1 ? nameParts[1].replace(/^\s+|\s+$/g, '') : '';
+          var patronymic  = nameParts.length > 2 ? nameParts[2].replace(/^\s+|\s+$/g, '') : '';
           properties['fName'] = firstName;
           if (lastName != '') {
             properties['lName'] = lastName;
+          }
+          if (patronymic != '') {
+            properties['patronymic'] = patronymic;
           }
         } else if (property == '_GENSTAT') {
           var props = getFirstValue(nextPerson[property]).split('');

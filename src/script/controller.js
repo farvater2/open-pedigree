@@ -1,5 +1,6 @@
 import { cloneObject, Timer } from 'pedigree/model/helpers';
 import PedigreeEditorParameters from 'pedigree/pedigreeEditorParameters';
+import { translate } from './translation';
 
 /**
  * ...
@@ -88,7 +89,7 @@ var Controller = Class.create({
     };
 
     // ...and display a OK/Cancel dialogue, calling "removeSelected()" on OK and "unhighlightSelected" on Cancel
-    if (window.confirm('All highlighted nodes will be removed. Do you want to proceed?')) {
+    if (window.confirm(translate('All highlighted nodes will be removed. Do you want to proceed?'))) {
       removeSelected();
     } else {
       unhighlightSelected();
@@ -148,11 +149,12 @@ var Controller = Class.create({
         // from "dead" to "alive" also clears the death date. Need to add it to the "undo" event
         if (propertySetFunction == 'setLifeStatus') {
           undoEvent.memo.properties['setDeathDate']    = node.getDeathDate();
+          undoEvent.memo.properties['setDeathAge']    = node.getDeathAge();
           undoEvent.memo.properties['setGestationAge'] = node.getGestationAge();
           undoEvent.memo.properties['setBirthDate']    = node.getBirthDate();
           undoEvent.memo.properties['setAdopted']      = node.getAdopted();
         }
-        if (propertySetFunction == 'setDeathDate') {
+        if (propertySetFunction == 'setDeathDate' || propertySetFunction == 'setDeathAge') {
           undoEvent.memo.properties['setLifeStatus'] = node.getLifeStatus();
         }
         if (propertySetFunction == 'setDisorders') {

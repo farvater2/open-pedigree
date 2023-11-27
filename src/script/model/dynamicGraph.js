@@ -132,9 +132,10 @@ DynamicPositionedGraph.prototype = {
   },
 
   // returns false if this gender is incompatible with this pedigree; true otherwise
-  setProbandData: function( firstName, lastName, gender ) {
+  setProbandData: function( firstName, lastName, patronymic, gender ) {
     this.DG.GG.properties[0].fName = firstName;
     this.DG.GG.properties[0].lName = lastName;
+    this.DG.GG.properties[0].patronymic = patronymic;
 
     var setGender = gender;
     var possibleGenders = this.getPossibleGenders(0);
@@ -1180,8 +1181,9 @@ DynamicPositionedGraph.prototype = {
   stripUnusedProperties: function() {
     for (var i = 0; i <= this.DG.GG.getMaxRealVertexId(); i++) {
       if (this.isPerson(i)) {
-        this.deleteEmptyProperty(i, 'fName');
         this.deleteEmptyProperty(i, 'lName');
+        this.deleteEmptyProperty(i, 'fName');
+        this.deleteEmptyProperty(i, 'patronymic');
         this.deleteEmptyProperty(i, 'gestationAge');
         this.deleteEmptyProperty(i, 'carrierStatus');
         this.deleteEmptyProperty(i, 'comments');

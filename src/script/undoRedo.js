@@ -137,12 +137,16 @@ var ActionStack = Class.create({
     if (!event1.memo.hasOwnProperty('nodeID') || !event2.memo.hasOwnProperty('nodeID') || event1.memo.nodeID != event2.memo.nodeID) {
       return false;
     }
+    if (event1.memo.properties.hasOwnProperty('setLastName') &&
+            event2.memo.properties.hasOwnProperty('setLastName') ) {
+      return true;
+    }
     if (event1.memo.properties.hasOwnProperty('setFirstName') &&
             event2.memo.properties.hasOwnProperty('setFirstName') ) {
       return true;
     }
-    if (event1.memo.properties.hasOwnProperty('setLastName') &&
-            event2.memo.properties.hasOwnProperty('setLastName') ) {
+    if (event1.memo.properties.hasOwnProperty('setPatronymic') &&
+            event2.memo.properties.hasOwnProperty('setPatronymic') ) {
       return true;
     }
     if (event1.memo.properties.hasOwnProperty('setComments') &&

@@ -216,7 +216,7 @@ PedigreeExport.exportAsPDF = function(pedigree, privacySetting = 'all', pageSize
 
 
   let compress = false;
-  let doc = new PDFDocument({compress: compress, size: pageSize, layout: layout});
+  let doc = new PDFDocument({compress: compress, size: pageSize, layout: layout, font: 'Helvetica'});
 
   let stream = doc.pipe(blobStream());
   stream.on('finish', function () {
@@ -323,8 +323,9 @@ PedigreeExport.exportAsPDF = function(pedigree, privacySetting = 'all', pageSize
 // TODO: convert internal properties to match public names and rename this to "supportedProperties"
 PedigreeExport.internalToJSONPropertyMapping = {
   'proband':       'proband',
-  'fName':         'firstName',
   'lName':         'lastName',
+  'fName':         'firstName',
+  'patronymic':    'patronymic',
   'comments':      'comments',
   'twinGroup':     'twinGroup',
   'monozygotic':   'monozygotic',

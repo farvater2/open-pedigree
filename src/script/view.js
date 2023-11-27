@@ -16,7 +16,7 @@ import { drawCornerCurve, drawLevelChangeCurve } from 'pedigree/view/graphicHelp
 
 var View = Class.create({
 
-  initialize: function() {
+  initialize: function () {
 
     this.preGenerateGraphics();
 
@@ -24,10 +24,10 @@ var View = Class.create({
 
     this.hoverModeZones = editor.getPaper().set();
 
-    this._currentMarkedNew   = [];
-    this._currentGrownNodes  = [];
+    this._currentMarkedNew = [];
+    this._currentGrownNodes = [];
     this._currentHoveredNode = null;
-    this._currentDraggable   = null;
+    this._currentDraggable = null;
 
     this._lineSet = new LineSet();   // used to track intersecting lines
   },
@@ -38,7 +38,7 @@ var View = Class.create({
      *
      * @method preGenerateGraphics
      */
-  preGenerateGraphics: function() {
+  preGenerateGraphics: function () {
     //
     // computing scaled icons:
     //   var iconScale = 0.6;
@@ -48,12 +48,12 @@ var View = Class.create({
     // 1) menu button
     // nonScaledPath = "M2.021,9.748L2.021,9.748V9.746V9.748zM2.022,9.746l5.771,5.773l-5.772,5.771l2.122,2.123l7.894-7.895L4.143,7.623L2.022,9.746zM12.248,23.269h14.419V20.27H12.248V23.269zM16.583,17.019h10.084V14.02H16.583V17.019zM12.248,7.769v3.001h14.419V7.769H12.248z";
     this.__menuButton_svgPath = 'M1.213,5.849C1.213,5.849,1.213,5.849,1.213,5.849C1.213,5.849,1.213,5.848,1.213,5.848C1.213,5.848,1.213,5.849,1.213,5.849C1.213,5.849,1.213,5.849,1.213,5.849M1.213,5.848C1.213,5.848,4.676,9.3114,4.676,9.3114C4.676,9.3114,1.2126,12.774,1.2126,12.774C1.2126,12.774,2.486,14.048,2.486,14.048C2.486,14.048,7.222,9.311,7.222,9.311C7.222,9.311,2.486,4.574,2.486,4.574C2.486,4.574,1.213,5.848,1.213,5.8476C1.2131999999999998,5.8476,1.2131999999999998,5.8476,1.2131999999999998,5.8476M7.348799999999999,13.9614C7.348799999999999,13.9614,16.0002,13.9614,16.0002,13.9614C16.0002,13.9614,16.0002,12.161999999999999,16.0002,12.161999999999999C16.0002,12.161999999999999,7.348799999999999,12.161999999999999,7.348799999999999,12.161999999999999C7.348799999999999,12.161999999999999,7.348799999999999,13.9614,7.348799999999999,13.9614C7.348799999999999,13.9614,7.348799999999999,13.9614,7.348799999999999,13.9614M9.949799999999998,10.2114C9.949799999999998,10.2114,16.0002,10.2114,16.0002,10.2114C16.0002,10.2114,16.0002,8.411999999999999,16.0002,8.411999999999999C16.0002,8.411999999999999,9.949799999999998,8.411999999999999,9.949799999999998,8.411999999999999C9.949799999999998,8.411999999999999,9.949799999999998,10.2114,9.949799999999998,10.2114C9.949799999999998,10.2114,9.949799999999998,10.2114,9.949799999999998,10.2114M7.348799999999999,4.6613999999999995C7.348799999999999,4.6613999999999995,7.348799999999999,6.462,7.348799999999999,6.462C7.348799999999999,6.462,16.0002,6.462,16.0002,6.462C16.0002,6.462,16.0002,4.661,16.0,4.6614C16.0,4.6614,7.349,4.6614,7.349,4.6614C7.349,4.6614,7.349,4.6614,7.349,4.6614';
-    this.__menuButton_BBox    = Raphael.pathBBox(this.__menuButton_svgPath);
+    this.__menuButton_BBox = Raphael.pathBBox(this.__menuButton_svgPath);
 
     // 2) delete button
     // nonScaledPath = var path = "M24.778,21.419 19.276,15.917 24.777,10.415 21.949,7.585 16.447,13.087 10.945,7.585 8.117,10.415 13.618,15.917 8.116,21.419 10.946,24.248 16.447,18.746 21.948,24.248z";
     this.__deleteButton_svgPath = 'M14.867,12.851C14.867,12.851,11.566,9.55,11.566,9.55C11.566,9.55,14.866,6.249,14.866,6.249C14.866,6.249,13.169,4.551,13.169,4.551C13.169,4.551,9.868,7.852,9.868,7.852C9.868,7.852,6.567,4.551,6.567,4.551C6.567,4.551,4.87,6.249,4.87,6.249C4.87,6.249,8.171,9.55,8.171,9.55C8.171,9.55,4.87,12.851,4.870,12.851C4.870,12.851,6.568,14.549,6.568,14.549C6.568,14.549,9.868,11.248,9.868,11.248C9.868,11.248,13.169,14.549,13.169,14.549C13.169,14.549,14.867,12.851,14.867,12.851';
-    this.__deleteButton_BBox    = Raphael.pathBBox(this.__deleteButton_svgPath);
+    this.__deleteButton_BBox = Raphael.pathBBox(this.__deleteButton_svgPath);
 
     // 3) twins button
     //this.__twinsButton_svgPath = "M0,15L8,0L16,15";
@@ -75,7 +75,7 @@ var View = Class.create({
         {nodeID} : {AbstractNode}
      }
      */
-  getNodeMap: function() {
+  getNodeMap: function () {
     return this._nodeMap;
   },
 
@@ -87,14 +87,14 @@ var View = Class.create({
      * @return {AbstractNode}
      *
      */
-  getNode: function(nodeId) {
+  getNode: function (nodeId) {
     if (!this._nodeMap.hasOwnProperty(nodeId)) {
       throw 'ERROR';
     }
     return this._nodeMap[nodeId];
   },
 
-  getMaxNodeID: function() {
+  getMaxNodeID: function () {
     var max = 0;
     for (var node in this._nodeMap) {
       if (this._nodeMap.hasOwnProperty(node)) {
@@ -112,11 +112,11 @@ var View = Class.create({
      * @method getPersonNodeNear
      * @return {Object} or null
      */
-  getPersonNodeNear: function(x, y) {
+  getPersonNodeNear: function (x, y) {
     for (var nodeID in this._nodeMap) {
       if (this._nodeMap.hasOwnProperty(nodeID)) {
         var node = this.getNode(nodeID);
-        if ((node.getType() == 'Person' || node.getType() == 'PersonGroup') && node.getGraphics().containsXY(x,y)) {
+        if ((node.getType() == 'Person' || node.getType() == 'PersonGroup') && node.getGraphics().containsXY(x, y)) {
           return node;
         }
       }
@@ -130,7 +130,7 @@ var View = Class.create({
      * @method getCurrentHoveredNode
      * @return {AbstractNode}
      */
-  getCurrentHoveredNode: function() {
+  getCurrentHoveredNode: function () {
     return this._currentHoveredNode;
   },
 
@@ -140,7 +140,7 @@ var View = Class.create({
      * @method getCurrentDraggable
      * @return Either a handle from a hoverbox, or a PlaceHolder
      */
-  getCurrentDraggable: function() {
+  getCurrentDraggable: function () {
     return this._currentDraggable;
   },
 
@@ -150,7 +150,7 @@ var View = Class.create({
      * @method setCurrentDraggable
      * @param draggable A handle or a PlaceHolder
      */
-  setCurrentDraggable: function(draggable) {
+  setCurrentDraggable: function (draggable) {
     this._currentDraggable = draggable;
   },
 
@@ -160,7 +160,7 @@ var View = Class.create({
      * @method removeFromNodeMap
      * @param {nodeId} id of the node to be removed
      */
-  removeFromNodeMap: function(nodeID) {
+  removeFromNodeMap: function (nodeID) {
     delete this.getNodeMap()[nodeID];
   },
 
@@ -171,24 +171,24 @@ var View = Class.create({
      *
      * @method drawCurvedLineWithCrossings
      */
-  drawCurvedLineWithCrossings: function ( id, xFrom, yFrom, yTop, xTo, yTo, lastBend, attr, twoLines, secondLineBelow ) {
+  drawCurvedLineWithCrossings: function (id, xFrom, yFrom, yTop, xTo, yTo, lastBend, attr, twoLines, secondLineBelow) {
 
     if (yFrom == yTop && yFrom == yTo) {
       return this.drawLineWithCrossings(id, xFrom, yFrom, xTo, yTo, attr, twoLines, secondLineBelow);
     }
 
-    var cornerRadius     = PedigreeEditorParameters.attributes.curvedLinesCornerRadius * 0.8;
-    var goesRight        = ( xFrom > xTo );
+    var cornerRadius = PedigreeEditorParameters.attributes.curvedLinesCornerRadius * 0.8;
+    var goesRight = (xFrom > xTo);
     if (isFinite(lastBend)) {
-      var xFinalBend       = goesRight ? xTo + lastBend                  : xTo - lastBend;
-      var xFinalBendVert   = goesRight ? xTo + lastBend + cornerRadius   : xTo - lastBend - cornerRadius;
-      var xBeforeFinalBend = goesRight ? xTo + lastBend + cornerRadius*2 : xTo - lastBend - cornerRadius*2;
+      var xFinalBend = goesRight ? xTo + lastBend : xTo - lastBend;
+      var xFinalBendVert = goesRight ? xTo + lastBend + cornerRadius : xTo - lastBend - cornerRadius;
+      var xBeforeFinalBend = goesRight ? xTo + lastBend + cornerRadius * 2 : xTo - lastBend - cornerRadius * 2;
     } else {
       var xBeforeFinalBend = xTo;
     }
-    var xFromAndBit        = goesRight ? xFrom - cornerRadius/2        : xFrom + cornerRadius/2;
-    var xFromAfterCorner   = goesRight ? xFromAndBit - cornerRadius    : xFromAndBit + cornerRadius;
-    var xFromAfter2Corners = goesRight ? xFromAndBit - 2*cornerRadius  : xFromAndBit + 2 * cornerRadius;
+    var xFromAndBit = goesRight ? xFrom - cornerRadius / 2 : xFrom + cornerRadius / 2;
+    var xFromAfterCorner = goesRight ? xFromAndBit - cornerRadius : xFromAndBit + cornerRadius;
+    var xFromAfter2Corners = goesRight ? xFromAndBit - 2 * cornerRadius : xFromAndBit + 2 * cornerRadius;
 
 
     if (yFrom <= yTop) {
@@ -196,24 +196,24 @@ var View = Class.create({
     } else {
       this.drawLineWithCrossings(id, xFrom, yFrom, xFromAndBit, yFrom, attr, twoLines, !goesRight, true);
 
-      if (Math.abs(yFrom - yTop) >= cornerRadius*2) {
+      if (Math.abs(yFrom - yTop) >= cornerRadius * 2) {
         if (goesRight) {
-          drawCornerCurve( xFromAndBit, yFrom, xFromAfterCorner, yFrom-cornerRadius, true, attr, twoLines, -2.5, 2.5, 2.5, -2.5 );
+          drawCornerCurve(xFromAndBit, yFrom, xFromAfterCorner, yFrom - cornerRadius, true, attr, twoLines, -2.5, 2.5, 2.5, -2.5);
         } else {
-          drawCornerCurve( xFromAndBit, yFrom, xFromAfterCorner, yFrom-cornerRadius, true, attr, twoLines, 2.5, 2.5, -2.5, -2.5 );
+          drawCornerCurve(xFromAndBit, yFrom, xFromAfterCorner, yFrom - cornerRadius, true, attr, twoLines, 2.5, 2.5, -2.5, -2.5);
         }
-        this.drawLineWithCrossings(id, xFromAfterCorner, yFrom-cornerRadius, xFromAfterCorner, yTop+cornerRadius, attr, twoLines, goesRight);
+        this.drawLineWithCrossings(id, xFromAfterCorner, yFrom - cornerRadius, xFromAfterCorner, yTop + cornerRadius, attr, twoLines, goesRight);
         if (goesRight) {
-          drawCornerCurve( xFromAfterCorner, yTop+cornerRadius, xFromAfter2Corners, yTop, false, attr, twoLines, -2.5, 2.5, 2.5, -2.5 );
+          drawCornerCurve(xFromAfterCorner, yTop + cornerRadius, xFromAfter2Corners, yTop, false, attr, twoLines, -2.5, 2.5, 2.5, -2.5);
         } else {
-          drawCornerCurve( xFromAfterCorner, yTop+cornerRadius, xFromAfter2Corners, yTop, false, attr, twoLines, 2.5, 2.5, -2.5, -2.5 );
+          drawCornerCurve(xFromAfterCorner, yTop + cornerRadius, xFromAfter2Corners, yTop, false, attr, twoLines, 2.5, 2.5, -2.5, -2.5);
         }
       } else {
         // draw one continuous curve
         if (goesRight) {
-          drawLevelChangeCurve( xFromAndBit, yFrom, xFromAfter2Corners, yTop, attr, twoLines, -2.5, 2.5, 2.5, -2.5 );
+          drawLevelChangeCurve(xFromAndBit, yFrom, xFromAfter2Corners, yTop, attr, twoLines, -2.5, 2.5, 2.5, -2.5);
         } else {
-          drawLevelChangeCurve( xFromAndBit, yFrom, xFromAfter2Corners, yTop, attr, twoLines, 2.5, 2.5, -2.5, -2.5 );
+          drawLevelChangeCurve(xFromAndBit, yFrom, xFromAfter2Corners, yTop, attr, twoLines, 2.5, 2.5, -2.5, -2.5);
         }
       }
       this.drawLineWithCrossings(id, xFromAfter2Corners, yTop, xBeforeFinalBend, yTop, attr, twoLines, !goesRight, true);
@@ -221,25 +221,25 @@ var View = Class.create({
 
     if (xBeforeFinalBend != xTo) {
       // curve down to yTo level
-      if (Math.abs(yTo - yTop) >= cornerRadius*2) {
+      if (Math.abs(yTo - yTop) >= cornerRadius * 2) {
         // draw corner
         if (goesRight) {
-          drawCornerCurve( xBeforeFinalBend, yTop, xFinalBendVert, yTop+cornerRadius, true, attr, twoLines, 2.5, 2.5, -2.5, -2.5 );
+          drawCornerCurve(xBeforeFinalBend, yTop, xFinalBendVert, yTop + cornerRadius, true, attr, twoLines, 2.5, 2.5, -2.5, -2.5);
         } else {
-          drawCornerCurve( xBeforeFinalBend, yTop, xFinalBendVert, yTop+cornerRadius, true, attr, twoLines, 2.5, -2.5, -2.5, 2.5 );
+          drawCornerCurve(xBeforeFinalBend, yTop, xFinalBendVert, yTop + cornerRadius, true, attr, twoLines, 2.5, -2.5, -2.5, 2.5);
         }
-        this.drawLineWithCrossings(id, xFinalBendVert, yTop+cornerRadius, xFinalBendVert, yTo-cornerRadius, attr, twoLines, !goesRight);
+        this.drawLineWithCrossings(id, xFinalBendVert, yTop + cornerRadius, xFinalBendVert, yTo - cornerRadius, attr, twoLines, !goesRight);
         if (goesRight) {
-          drawCornerCurve( xFinalBendVert, yTo-cornerRadius, xFinalBend, yTo, false, attr, twoLines, 2.5, 2.5, -2.5, -2.5 );
+          drawCornerCurve(xFinalBendVert, yTo - cornerRadius, xFinalBend, yTo, false, attr, twoLines, 2.5, 2.5, -2.5, -2.5);
         } else {
-          drawCornerCurve( xFinalBendVert, yTo-cornerRadius, xFinalBend, yTo, false, attr, twoLines, 2.5, -2.5, -2.5, 2.5 );
+          drawCornerCurve(xFinalBendVert, yTo - cornerRadius, xFinalBend, yTo, false, attr, twoLines, 2.5, -2.5, -2.5, 2.5);
         }
       } else {
         // draw one continuous curve
         if (goesRight) {
-          drawLevelChangeCurve( xBeforeFinalBend, yTop, xFinalBend, yTo, attr, twoLines, 2.5, 2.5, -2.5, -2.5 );
+          drawLevelChangeCurve(xBeforeFinalBend, yTop, xFinalBend, yTo, attr, twoLines, 2.5, 2.5, -2.5, -2.5);
         } else {
-          drawLevelChangeCurve( xBeforeFinalBend, yTop, xFinalBend, yTo, attr, twoLines, 2.5, -2.5, -2.5, 2.5 );
+          drawLevelChangeCurve(xBeforeFinalBend, yTop, xFinalBend, yTo, attr, twoLines, 2.5, -2.5, -2.5, 2.5);
         }
       }
       this.drawLineWithCrossings(id, xFinalBend, yTo, xTo, yTo, attr, twoLines, !goesRight);
@@ -252,7 +252,7 @@ var View = Class.create({
      *
      * @method drawLineWithCrossings
      */
-  drawLineWithCrossings: function(owner, x1, y1, x2, y2, attr, twoLines, secondLineBelow, bothEndsGoDown) {
+  drawLineWithCrossings: function (owner, x1, y1, x2, y2, attr, twoLines, secondLineBelow, bothEndsGoDown) {
 
     // make sure line goes from the left to the right (and if vertical from the top to the bottom):
     // this simplifies drawing the line piece by piece from intersection to intersection
@@ -266,14 +266,14 @@ var View = Class.create({
     }
 
     var isHorizontal = (y1 == y2);
-    var isVertical   = (x1 == x2);
+    var isVertical = (x1 == x2);
 
-    var intersections = this._lineSet.addLine( owner, x1, y1, x2, y2 );
+    var intersections = this._lineSet.addLine(owner, x1, y1, x2, y2);
 
     // sort intersections by distance form the start
-    var compareDistanceToStart = function( p1, p2 ) {
-      var dist1 = (x1-p1.x)*(x1-p1.x) + (y1-p1.y)*(y1-p1.y);
-      var dist2 = (x1-p2.x)*(x1-p2.x) + (y1-p2.y)*(y1-p2.y);
+    var compareDistanceToStart = function (p1, p2) {
+      var dist1 = (x1 - p1.x) * (x1 - p1.x) + (y1 - p1.y) * (y1 - p1.y);
+      var dist2 = (x1 - p2.x) * (x1 - p2.x) + (y1 - p2.y) * (y1 - p2.y);
       return dist1 - dist2;
     };
     intersections.sort(compareDistanceToStart);
@@ -293,8 +293,8 @@ var View = Class.create({
         }
 
         if (secondLineBelow) {
-          y1 += ( 2.5 - lineNum * 7.5);
-          y2 += ( 2.5 - lineNum * 7.5);
+          y1 += (2.5 - lineNum * 7.5);
+          y2 += (2.5 - lineNum * 7.5);
         } else {
           y1 += (-2.5 + lineNum * 7.5);
           y2 += (-2.5 + lineNum * 7.5);
@@ -305,47 +305,47 @@ var View = Class.create({
       for (var i = 0; i < intersections.length; i++) {
         var intersectPoint = intersections[i];
 
-        var distance = function(p1, p2) {
-          return (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y);
+        var distance = function (p1, p2) {
+          return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
         };
 
-        var noCrossSymbolProximity = isHorizontal ? 20*20 : 9*9;
+        var noCrossSymbolProximity = isHorizontal ? 20 * 20 : 9 * 9;
 
-        if (distance(intersectPoint, {'x': x1, 'y': y1}) < noCrossSymbolProximity) {
+        if (distance(intersectPoint, { 'x': x1, 'y': y1 }) < noCrossSymbolProximity) {
           continue;
         }
-        if (distance(intersectPoint, {'x': x2, 'y': y2}) < noCrossSymbolProximity) {
+        if (distance(intersectPoint, { 'x': x2, 'y': y2 }) < noCrossSymbolProximity) {
           continue;
         }
 
         if (isHorizontal) {
           if (twoLines) {
             if (secondLineBelow) {
-              intersectPoint.y += ( 2.5 - lineNum * 7.5);
+              intersectPoint.y += (2.5 - lineNum * 7.5);
             } else {
               intersectPoint.y += (-2.5 + lineNum * 7.5);
             }
           }
           // a curve above the crossing
           raphaelPath += ' L ' + (intersectPoint.x - 10) + ' ' + intersectPoint.y;
-          raphaelPath += ' C ' + (intersectPoint.x - 7)  + ' ' + (intersectPoint.y + 1) +
-                                     ' ' + (intersectPoint.x - 7)  + ' ' + (intersectPoint.y - 7) +
-                                     ' ' + (intersectPoint.x)      + ' ' + (intersectPoint.y - 7);
-          raphaelPath += ' C ' + (intersectPoint.x + 7)  + ' ' + (intersectPoint.y - 7) +
-                                     ' ' + (intersectPoint.x + 7)  + ' ' + (intersectPoint.y + 1) +
-                                     ' ' + (intersectPoint.x + 10) + ' ' + (intersectPoint.y);
+          raphaelPath += ' C ' + (intersectPoint.x - 7) + ' ' + (intersectPoint.y + 1) +
+            ' ' + (intersectPoint.x - 7) + ' ' + (intersectPoint.y - 7) +
+            ' ' + (intersectPoint.x) + ' ' + (intersectPoint.y - 7);
+          raphaelPath += ' C ' + (intersectPoint.x + 7) + ' ' + (intersectPoint.y - 7) +
+            ' ' + (intersectPoint.x + 7) + ' ' + (intersectPoint.y + 1) +
+            ' ' + (intersectPoint.x + 10) + ' ' + (intersectPoint.y);
         } else if (isVertical) {
           if (twoLines) {
-            intersectPoint.x += ( -2.5 + lineNum * 7.5);
+            intersectPoint.x += (-2.5 + lineNum * 7.5);
           }
           // a curve on the right around crossing
-          raphaelPath += ' L ' + intersectPoint.x        + ' ' + (intersectPoint.y - 10);
-          raphaelPath += ' C ' + (intersectPoint.x - 1)  + ' ' + (intersectPoint.y - 7) +
-                                     ' ' + (intersectPoint.x + 7)  + ' ' + (intersectPoint.y - 7) +
-                                     ' ' + (intersectPoint.x + 7)  + ' ' + (intersectPoint.y);
-          raphaelPath += ' C ' + (intersectPoint.x + 7)  + ' ' + (intersectPoint.y + 7) +
-                                     ' ' + (intersectPoint.x - 1)  + ' ' + (intersectPoint.y + 7) +
-                                     ' ' + (intersectPoint.x)      + ' ' + (intersectPoint.y + 10);
+          raphaelPath += ' L ' + intersectPoint.x + ' ' + (intersectPoint.y - 10);
+          raphaelPath += ' C ' + (intersectPoint.x - 1) + ' ' + (intersectPoint.y - 7) +
+            ' ' + (intersectPoint.x + 7) + ' ' + (intersectPoint.y - 7) +
+            ' ' + (intersectPoint.x + 7) + ' ' + (intersectPoint.y);
+          raphaelPath += ' C ' + (intersectPoint.x + 7) + ' ' + (intersectPoint.y + 7) +
+            ' ' + (intersectPoint.x - 1) + ' ' + (intersectPoint.y + 7) +
+            ' ' + (intersectPoint.x) + ' ' + (intersectPoint.y + 10);
         }
         // else: some diagonal line: presumably there should be none, if there are some
         //       everything will be ok except there will be no special intersection graphic drawn
@@ -364,7 +364,7 @@ var View = Class.create({
      * @param {Number} [id] The id of the node
      * @return {Person}
      */
-  addNode: function(id) {
+  addNode: function (id) {
     var positionedGraph = editor.getGraph();
 
     if (!positionedGraph.isValidID(id)) {
@@ -375,7 +375,7 @@ var View = Class.create({
     var properties = positionedGraph.getProperties(id);
 
     var graphPos = positionedGraph.getPosition(id);
-    var position = editor.convertGraphCoordToCanvasCoord(graphPos.x, graphPos.y );
+    var position = editor.convertGraphCoordToCanvasCoord(graphPos.x, graphPos.y);
 
     if (positionedGraph.isRelationship(id)) {
       node = new Partnership(position.x, position.y, id, properties);
@@ -392,22 +392,22 @@ var View = Class.create({
     return node;
   },
 
-  moveNode: function(id, animate) {
+  moveNode: function (id, animate) {
     var positionedGraph = editor.getGraph();
     var graphPos = positionedGraph.getPosition(id);
-    var position = editor.convertGraphCoordToCanvasCoord(graphPos.x, graphPos.y );
+    var position = editor.convertGraphCoordToCanvasCoord(graphPos.x, graphPos.y);
     this.getNode(id).setPos(position.x, position.y, animate);
   },
 
-  changeNodeIds: function( changedIdsSet ) {
+  changeNodeIds: function (changedIdsSet) {
     var newNodeMap = {};
 
     // change all IDs at once so that have both new and old references at the same time
     for (var oldID in this._nodeMap) {
-      var node  = this.getNode(oldID);
+      var node = this.getNode(oldID);
 
       var newID = changedIdsSet.hasOwnProperty(oldID) ? changedIdsSet[oldID] : oldID;
-      node.setID( newID );
+      node.setID(newID);
 
       newNodeMap[newID] = node;
     }
@@ -426,14 +426,14 @@ var View = Class.create({
      *                   relationship with sourceNode will be highlighted
      * dragged on top of them.
      */
-  enterHoverMode: function(sourceNode, hoverType) {
+  enterHoverMode: function (sourceNode, hoverType) {
 
     //var timer = new Timer();
 
     var me = this;
     var validTargets = this.getValidDragTargets(sourceNode.getID(), hoverType);
 
-    validTargets.each(function(nodeID) {
+    validTargets.each(function (nodeID) {
       me._currentGrownNodes.push(nodeID);
 
       var node = me.getNode(nodeID);
@@ -442,11 +442,11 @@ var View = Class.create({
       var hoverModeZone = node.getGraphics().getHoverBox().getHoverZoneMask().clone().toFront();
       //var hoverModeZone = node.getGraphics().getHoverBox().getHoverZoneMask().toFront();
       hoverModeZone.hover(
-        function() {
+        function () {
           me._currentHoveredNode = nodeID;
           node.getGraphics().getHoverBox().setHighlighted(true);
         },
-        function() {
+        function () {
           me._currentHoveredNode = null;
           node.getGraphics().getHoverBox().setHighlighted(false);
         });
@@ -462,13 +462,13 @@ var View = Class.create({
      *
      * @method exitHoverMode
      */
-  exitHoverMode: function() {
+  exitHoverMode: function () {
     this._currentHoveredNode = null;
 
     this.hoverModeZones.remove();
 
     var me = this;
-    this._currentGrownNodes.each(function(nodeID) {
+    this._currentGrownNodes.each(function (nodeID) {
       var node = me.getNode(nodeID);
       node.getGraphics().shrink();
       node.getGraphics().getHoverBox().setHighlighted(false);
@@ -477,7 +477,7 @@ var View = Class.create({
     this._currentGrownNodes = [];
   },
 
-  unmarkAll: function() {
+  unmarkAll: function () {
     for (var i = 0; i < this._currentMarkedNew.length; i++) {
       var node = this.getNode(this._currentMarkedNew[i]);
       node.getGraphics().unmark();
@@ -485,35 +485,35 @@ var View = Class.create({
     this._currentMarkedNew = [];
   },
 
-  getValidDragTargets: function(sourceNodeID, hoverType) {
+  getValidDragTargets: function (sourceNodeID, hoverType) {
     var result = [];
     switch (hoverType) {
-    case 'sibling':
-      result = editor.getGraph().getPossibleSiblingsOf(sourceNodeID);
-      break;
-    case 'child':
-      // all person nodes which are not ancestors of sourse node and which do not already have parents
-      result = editor.getGraph().getPossibleChildrenOf(sourceNodeID);
-      break;
-    case 'parent':
-      result = editor.getGraph().getPossibleParentsOf(sourceNodeID);
-      break;
-    case 'partnerR':
-    case 'partnerL':
-      // all person nodes of the other gender or unknown gender (who ar enot already partners)
-      result = editor.getGraph().getPossiblePartnersOf(sourceNodeID);
-      break;
-    case 'PlaceHolder':
-      // all nodes which can be this placehodler: e.g. all that can be child of it's parents &&
-      // partners of it's partners
-      throw 'TODO';
-    default:
-      throw 'Incorrect hoverType';
+      case 'sibling':
+        result = editor.getGraph().getPossibleSiblingsOf(sourceNodeID);
+        break;
+      case 'child':
+        // all person nodes which are not ancestors of sourse node and which do not already have parents
+        result = editor.getGraph().getPossibleChildrenOf(sourceNodeID);
+        break;
+      case 'parent':
+        result = editor.getGraph().getPossibleParentsOf(sourceNodeID);
+        break;
+      case 'partnerR':
+      case 'partnerL':
+        // all person nodes of the other gender or unknown gender (who ar enot already partners)
+        result = editor.getGraph().getPossiblePartnersOf(sourceNodeID);
+        break;
+      case 'PlaceHolder':
+        // all nodes which can be this placehodler: e.g. all that can be child of it's parents &&
+        // partners of it's partners
+        throw 'TODO';
+      default:
+        throw 'Incorrect hoverType';
     }
     return result;
   },
 
-  applyChanges: function( changeSet, markNew ) {
+  applyChanges: function (changeSet, markNew) {
     // applies change set of the form {"new": {list of nodes}, "moved": {list of nodes} }
 
     var timer = new Timer();
@@ -596,11 +596,11 @@ var View = Class.create({
       timer.printSinceLast('=== Removal runtime: ');
 
 
-      var movedPersons       = [];
+      var movedPersons = [];
       var movedRelationships = [];
-      var newPersons         = [];
-      var newRelationships   = [];
-      var animate            = {};
+      var newPersons = [];
+      var newRelationships = [];
+      var animate = {};
 
       /*
         // TODO: animations disabled because hoverboxes & labels behave strangely
@@ -702,9 +702,105 @@ var View = Class.create({
 
       timer.printSinceLast('=== highlight & update handles runtime: ');
       timer2.printSinceLast('=== Total apply changes runtime: ');
+      console.log('applyChanges end');
+      this.addGenerationNumber();
 
-    } catch(err) {
+    } catch (err) {
     }
+  },
+
+  addGenerationNumber: function () {
+
+    let minX;
+    let arrOfX = [];
+    let arrOfY = [];
+    let svg = document.getElementById('canvas').getElementsByTagName('svg')[0];
+    let coordinates = [];
+
+    for (var nodeID in this._nodeMap) {
+
+      if (editor.getGraph().isPerson(nodeID)) {
+        let x = this.getNode(nodeID).getX() - 0;
+        let y = this.getNode(nodeID).getY() - 0;
+
+        coordinates.push({ x, y });
+
+        if (arrOfY.indexOf(y) === -1) {
+          arrOfY.push(y);
+        }
+        if (arrOfX.indexOf(x) === -1) {
+          arrOfX.push(x);
+        }
+
+      }
+    }
+
+    coordinates.sort(function (a, b) {
+      if (a.y === b.y) {
+        return a.x - b.x;
+      }
+      return a.y - b.y;
+    })
+    
+    arrOfX.sort(function (a, b) { return a - b });
+    arrOfY.sort(function (a, b) { return a - b });
+    minX = arrOfX[0];
+
+    document.querySelectorAll('[generationNumber]').forEach(item => item.remove());
+    document.querySelectorAll('[possitionX]').forEach(item => item.remove());
+
+    for (let i = 0; i < arrOfY.length; i++) {
+      let newText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      newText.setAttributeNS(null, "x", minX - 150);
+      newText.setAttributeNS(null, "y", arrOfY[i]);
+      newText.setAttributeNS(null, "generationNumber", i+1);
+      newText.setAttributeNS(null, "font-size", "20");
+      newText.setAttributeNS(null, "user-select", "none");
+
+      let textNode = document.createTextNode(romanize(i+1));
+      newText.appendChild(textNode);
+      
+    if (PedigreeEditorParameters.getSetting('showGenerationNumber')) {
+      svg.appendChild(newText);
+    }
+    }
+
+    for (let i = 0, currentY = coordinates[0].y, possitionX = 1; i < coordinates.length; i++) {
+      if (currentY !== coordinates[i].y) {
+        possitionX = 1;
+        currentY = coordinates[i].y
+      }
+      let newText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      newText.setAttributeNS(null, "x", coordinates[i].x - 40);
+      newText.setAttributeNS(null, "y", coordinates[i].y - 50);
+      newText.setAttributeNS(null, "possitionX", possitionX);
+      newText.setAttributeNS(null, "font-size", "15");
+      newText.setAttributeNS(null, "user-select", "none");
+
+      let textNode = document.createTextNode(possitionX);
+      newText.appendChild(textNode);
+      
+    if (PedigreeEditorParameters.getSetting('showSequenceNumberInsideGeneration')) {
+      svg.appendChild(newText);
+    }
+      possitionX++;
+    }
+
+
+    function romanize(num) {
+      if (isNaN(num))
+        return NaN;
+      var digits = String(+num).split(""),
+        key = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
+          "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
+          "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
+        roman = "",
+        i = 3;
+      while (i--)
+        roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+      return Array(+digits.join("") + 1).join("M") + roman;
+    }
+
   }
 });
 

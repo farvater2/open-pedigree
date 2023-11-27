@@ -1,4 +1,5 @@
 import Raphael from 'pedigree/raphael';
+import { translate } from 'pedigree/translation';
 
 /**
  * Workspace contains the Raphael canvas, the zoom/pan controls and the menu bar
@@ -30,6 +31,7 @@ var Workspace = Class.create({
 
     this.workArea.insert(new Element('div', {'id': 'attribution'})
       .insert('&copy; 2019-2022 Gene42 Inc.'));
+      this.workArea.insert(new Element('div', {'id': 'ageCalculationDateLabel'}));
 
     this.adjustSizeToScreen = this.adjustSizeToScreen.bind(this);
     Event.observe (window, 'resize', me.adjustSizeToScreen);
@@ -156,38 +158,58 @@ var Workspace = Class.create({
       submenus = [{
         name : 'input',
         items: [
-          { key : 'readonlymessage', label : 'Unsuported browser mode', icon : 'exclamation-triangle'}
+          { key : 'readonlymessage', label : translate('Unsuported browser mode'), icon : 'exclamation-triangle'}
         ]
       }, {
         name : 'output',
         items: [
-          { key : 'export',    label : 'Export', icon : 'file-export'},
-          { key : 'close',     label : 'Close', icon : 'times'}
+          { key : 'export',    label : translate('Export'), icon : 'file-export'}
+          //{ key : 'close',     label : translate('Close'), icon : 'times'}
         ]
       }];
     } else {
       submenus = [{
         name : 'input',
         items: [
-          { key : 'templates', label : 'Templates', icon : 'copy'},
-          { key : 'import',    label : 'Import', icon : 'file-import'}
+          { key : 'templates', label : translate('Templates'), icon : 'copy'},
+          { key : 'import',    label : translate('Import'), icon : 'file-import'}
         ]
       }, {
         name : 'edit',
         items: [
-          { key : 'undo',   label : 'Undo', icon : 'undo'},
-          { key : 'redo',   label : 'Redo', icon : 'redo'}
+          { key : 'undo',   label : translate('Undo'), icon : 'undo'},
+          { key : 'redo',   label : translate('Redo'), icon : 'redo'}
         ]
       }, {
         name : 'reset',
         items: [
-          { key : 'clear',  label : 'Clear all', icon : 'times-circle'}
+          { key : 'clear',  label : translate('Clear all'), icon : 'times-circle'}
         ]
       }, {
         name : 'output',
         items: [
-          { key : 'export',    label : 'Export', icon : 'file-export'},
-          { key : 'close',     label : 'Close', icon : 'times'}
+          { key : 'export',    label : translate('Export'), icon : 'file-export'}
+          //{ key : 'close',     label : translate('Close'), icon : 'times'}
+        ]
+      }, {
+        name : 'save',
+        items: [
+          { key : 'save',    label : translate('Save'), icon : 'save'}
+        ]
+      }, {
+        name : 'load',
+        items: [
+          { key : 'load',    label : translate('Load'), icon : 'download'}
+        ]
+      }, {
+        name : 'language',
+        items: [
+          { key : 'language',    label : 'Рус / Eng', icon : 'language'}
+        ]
+      }, {
+        name : 'settings',
+        items: [
+          { key : 'settings',    label : translate('Settings'), icon : 'cog'}
         ]
       }];
     }

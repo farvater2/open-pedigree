@@ -1,4 +1,5 @@
 import PedigreeExport from 'pedigree/model/export';
+import { translate } from 'pedigree/translation';
 
 /**
  * The UI Element for exporting pedigrees
@@ -28,12 +29,12 @@ var ExportSelector = Class.create( {
     typeListElement.insert(_addTypeOption(true,  'PED', 'ped'));
     typeListElement.insert(_addTypeOption(false,  'GA4GH FHIR', 'GA4GH'));
     typeListElement.insert(_addTypeOption(false,  'SVG', 'svg'));
-    typeListElement.insert(_addTypeOption(false,  'PDF', 'pdf'));
+    //typeListElement.insert(_addTypeOption(false,  'PDF', 'pdf'));
 
     var fileDownload = new Element('a', {'id': 'downloadLink', 'style': 'display:none'});
     mainDiv.insert(fileDownload);
 
-    var promptType = new Element('div', {'class': 'import-section'}).update('Data format:');
+    var promptType = new Element('div', {'class': 'import-section'}).update(translate('Data format:'));
     var dataSection2 = new Element('div', {'class': 'import-block'});
     dataSection2.insert(promptType).insert(typeListElement);
     mainDiv.insert(dataSection2);
@@ -49,18 +50,18 @@ var ExportSelector = Class.create( {
       return optionWrapper;
     };
     var configListElementPED = new Element('table', {'id': 'pedOptions'});
-    var label = new Element('label', {'class': 'export-config-header'}).insert('Which of the following fields should be used to generate person IDs?');
+    var label = new Element('label', {'class': 'export-config-header'}).insert(translate('Which of the following fields should be used to generate person IDs?'));
     configListElementPED.insert(label.wrap('td').wrap('tr'));
-    configListElementPED.insert(_addConfigOption(true,  'ped-options', 'export-subconfig-label', 'External ID', 'external'));
-    configListElementPED.insert(_addConfigOption(false, 'ped-options', 'export-subconfig-label', 'Name', 'name'));
-    configListElementPED.insert(_addConfigOption(false, 'ped-options', 'export-subconfig-label', 'None, generate new numeric ID for everyone', 'newid'));
+    configListElementPED.insert(_addConfigOption(true,  'ped-options', 'export-subconfig-label', translate('External ID'), 'external'));
+    configListElementPED.insert(_addConfigOption(false, 'ped-options', 'export-subconfig-label', translate('Name'), 'name'));
+    configListElementPED.insert(_addConfigOption(false, 'ped-options', 'export-subconfig-label', translate('None, generate new numeric ID for everyone'), 'newid'));
 
     var configListElementPrivacy = new Element('table', {'id': 'privacyOptions', 'style': 'display:none'});
-    var privLabel = new Element('label', {'class': 'export-config-header'}).insert('Privacy export options:');
+    var privLabel = new Element('label', {'class': 'export-config-header'}).insert(translate('Privacy export options:'));
     configListElementPrivacy.insert(privLabel.wrap('td').wrap('tr'));
-    configListElementPrivacy.insert(_addConfigOption(true,  'privacy-options', 'export-subconfig-label', 'All data', 'all'));
-    configListElementPrivacy.insert(_addConfigOption(false, 'privacy-options', 'export-subconfig-label', 'Remove personal information (name and age)', 'nopersonal'));
-    configListElementPrivacy.insert(_addConfigOption(false, 'privacy-options', 'export-subconfig-label', 'Remove personal information and free-form comments', 'minimal'));
+    configListElementPrivacy.insert(_addConfigOption(true,  'privacy-options', 'export-subconfig-label', translate('All data'), 'all'));
+    configListElementPrivacy.insert(_addConfigOption(false, 'privacy-options', 'export-subconfig-label', translate('Remove personal information (name and age)'), 'nopersonal'));
+    configListElementPrivacy.insert(_addConfigOption(false, 'privacy-options', 'export-subconfig-label', translate('Remove personal information and free-form comments'), 'minimal'));
 
     var _addSelectOption = function (name, cssClass, labelText, options) {
       var optionWrapper = new Element('tr');
@@ -74,9 +75,9 @@ var ExportSelector = Class.create( {
     };
 
     var configListElementPDF = new Element('table', {'id': 'pdfOptions', 'style': 'display:none'});
-    var pdfLabel = new Element('label', {'class': 'export-config-header'}).insert('PDF export options:');
+    var pdfLabel = new Element('label', {'class': 'export-config-header'}).insert(translate('PDF export options:'));
     configListElementPDF.insert(pdfLabel.wrap('td').wrap('tr'));
-    configListElementPDF.insert(_addSelectOption('pdf-page-size', 'export-subconfig-label', 'Page Size ',
+    configListElementPDF.insert(_addSelectOption('pdf-page-size', 'export-subconfig-label', translate('Page Size '),
       [
         {label: 'A3', options: {value: 'A3'}},
         {label: 'A4', options: {value: 'A4', selected: true}},
@@ -86,27 +87,27 @@ var ExportSelector = Class.create( {
         {label: 'Letter', options: {value: 'LETTER'}},
         {label: 'Tabloid', options: {value: 'TABLOID'}}
       ]));
-    configListElementPDF.insert(_addSelectOption('pdf-page-orientation', 'export-subconfig-label', 'Page Orientation ',
+    configListElementPDF.insert(_addSelectOption('pdf-page-orientation', 'export-subconfig-label', translate('Page Orientation '),
       [
-        {label: 'Landscape', options: {value: 'landscape', selected: true}},
-        {label: 'Portrait', options: {value: 'portrait'}}
+        {label: translate('Landscape'), options: {value: 'landscape', selected: true}},
+        {label: translate('Portrait'), options: {value: 'portrait'}}
       ]));
-    configListElementPDF.insert(_addSelectOption('pdf-legend-pos', 'export-subconfig-label', 'Legend Position ',
+    configListElementPDF.insert(_addSelectOption('pdf-legend-pos', 'export-subconfig-label', translate('Legend Position '),
       [
-        {label: 'Top Left', options: {value: 'TopLeft'}},
-        {label: 'Top Right', options: {value: 'TopRight', selected: true}},
-        {label: 'Bottom Left', options: {value: 'BottomLeft'}},
-        {label: 'Bottom Right', options: {value: 'BottomRight'}}
+        {label: translate('Top Left'), options: {value: 'TopLeft'}},
+        {label: translate('Top Right'), options: {value: 'TopRight', selected: true}},
+        {label: translate('Bottom Left'), options: {value: 'BottomLeft'}},
+        {label: translate('Bottom Right'), options: {value: 'BottomRight'}}
       ]));
 
-    var promptConfig = new Element('div', {'class': 'import-section'}).update('Options:');
+    var promptConfig = new Element('div', {'class': 'import-section'}).update(translate('Options:'));
     var dataSection3 = new Element('div', {'class': 'import-block'});
     dataSection3.insert(promptConfig).insert(configListElementPED).insert(configListElementPrivacy).insert(configListElementPDF);
     mainDiv.insert(dataSection3);
 
     var buttons = new Element('div', {'class' : 'buttons import-block-bottom'});
-    buttons.insert(new Element('input', {type: 'button', name : 'export', 'value': 'Export', 'class' : 'button', 'id': 'export_button'}).wrap('span', {'class' : 'buttonwrapper'}));
-    buttons.insert(new Element('input', {type: 'button', name : 'cancel', 'value': 'Cancel', 'class' : 'button secondary'}).wrap('span', {'class' : 'buttonwrapper'}));
+    buttons.insert(new Element('input', {type: 'button', name : 'export', 'value': translate('Export'), 'class' : 'button', 'id': 'export_button'}).wrap('span', {'class' : 'buttonwrapper'}));
+    buttons.insert(new Element('input', {type: 'button', name : 'cancel', 'value': translate('Cancel'), 'class' : 'button secondary'}).wrap('span', {'class' : 'buttonwrapper'}));
     mainDiv.insert(buttons);
 
     var cancelButton = buttons.down('input[name="cancel"]');
@@ -119,7 +120,7 @@ var ExportSelector = Class.create( {
     });
 
     var closeShortcut = ['Esc'];
-    this.dialog = new PhenoTips.widgets.ModalPopup(mainDiv, {close: {method : this.hide.bind(this), keys : closeShortcut}}, {extraClassName: 'pedigree-import-chooser', title: 'Pedigree export', displayCloseButton: true});
+    this.dialog = new PhenoTips.widgets.ModalPopup(mainDiv, {close: {method : this.hide.bind(this), keys : closeShortcut}}, {extraClassName: 'pedigree-import-chooser', title: translate('Pedigree export'), displayCloseButton: true});
   },
 
   /*

@@ -4,6 +4,7 @@ import AbstractPerson from 'pedigree/view/abstractPerson';
 import PersonVisuals from 'pedigree/view/personVisuals';
 import HPOTerm from 'pedigree/hpoTerm';
 import Disorder from 'pedigree/disorder';
+import { translate } from 'pedigree/translation';
 
 /**
  * Person is a class representing any AbstractPerson that has sufficient information to be
@@ -41,9 +42,11 @@ var Person = Class.create(AbstractPerson, {
   _setDefault: function() {
     this._firstName = '';
     this._lastName = '';
+    this._patronymic = '';
     this._lastNameAtBirth = '';
     this._birthDate = '';
     this._deathDate = '';
+    this._deathAge = '';
     this._conceptionDate = '';
     this._gestationAge = '';
     this._isAdopted = false;
@@ -126,6 +129,29 @@ var Person = Class.create(AbstractPerson, {
     this._lastName = lastName;
     this.getGraphics().updateNameLabel();
     return lastName;
+  },
+
+  /**
+     * Returns the patronymic of this Person
+     *
+     * @method getPatronymic
+     * @return {String}
+     */
+   getPatronymic: function() {
+    return this._patronymic;
+  },
+
+  /**
+     * Replaces the patronymic of this Person with patronymic, and displays the label
+     *
+     * @method setPatronymic
+     * @param patronymic
+     */
+   setPatronymic: function(patronymic) {
+    patronymic && (patronymic = patronymic.charAt(0).toUpperCase() + patronymic.slice(1));
+    this._patronymic = patronymic;
+    this.getGraphics().updateNameLabel();
+    return patronymic;
   },
 
   /**
@@ -262,6 +288,16 @@ var Person = Class.create(AbstractPerson, {
   },
 
   /**
+     * Returns True if this node's status is 'deceased'.
+     *
+     * @method isDeceased
+     * @return {Boolean}
+     */
+  isDeceased: function() {
+    return (this.getLifeStatus() == 'deceased');
+  },
+
+  /**
      * Returns True is status is 'unborn', 'stillborn', 'aborted', 'miscarriage', 'alive' or 'deceased'
      *
      * @method _isValidLifeStatus
@@ -286,6 +322,10 @@ var Person = Class.create(AbstractPerson, {
       var oldStatus = this._lifeStatus;
 
       this._lifeStatus = newStatus;
+
+      // для setDeathAge
+      this.setDeathDate('');
+      //this.setDeathAge('');
 
       (newStatus != 'deceased') && this.setDeathDate('');
       (newStatus == 'alive') && this.setGestationAge();
@@ -384,10 +424,22 @@ var Person = Class.create(AbstractPerson, {
      */
   setBirthDate: function(newDate) {
     newDate = newDate ? (new Date(newDate)) : '';
+    this.setDeathAge('');
+    console.log('document');
+    console.log(document);
+    document.querySelector("[name='age_of_death']").disabled = true;
     if (!newDate || !this.getDeathDate() || newDate.getTime() < this.getDeathDate().getTime()) {
       this._birthDate = newDate;
       this.getGraphics().updateAgeLabel();
     }
+    if (!this.getBirthDate() && !this.getDeathDate()) {
+      document.querySelector("[name='age_of_death']").disabled = false;
+      //$(document.body).down("input[name='age_of_death']").removeAttr('disabled','disabled');
+    }
+    console.log('this.getBirthDate()',this.getBirthDate());
+    console.log('!!this.getBirthDate()',!!this.getBirthDate());
+    console.log('this.getDeathDate()',this.getDeathDate());
+    console.log('!!this.getDeathDate()',!!this.getDeathDate());
   },
 
   /**
@@ -401,6 +453,16 @@ var Person = Class.create(AbstractPerson, {
   },
 
   /**
+     * Returns the death age of this Person
+     *
+     * @method getDeathAge
+     * @return {Date}
+     */
+  getDeathAge: function() {
+    return this._deathAge;
+  },
+
+  /**
      * Replaces the death date with deathDate
      *
      *
@@ -409,13 +471,46 @@ var Person = Class.create(AbstractPerson, {
      */
   setDeathDate: function(deathDate) {
     deathDate = deathDate ? (new Date(deathDate)) : '';
+    this.setDeathAge('');
+    //document.querySelector("input[name='age_of_death']").disabled = true;
+    //$(document.body).down("input[name='age_of_death']").attr('disabled','disabled');
+    document.querySelector("[name='age_of_death']").disabled = true;
     // only set death date if it happens ot be after the birth date, or there is no birth or death date
     if(!deathDate || !this.getBirthDate() || deathDate.getTime() > this.getBirthDate().getTime()) {
       this._deathDate =  deathDate;
       this._deathDate && (this.getLifeStatus() == 'alive') && this.setLifeStatus('deceased');
     }
+    if (!this.getBirthDate() & !this.getDeathDate()) {
+      console.log('document.querySelector("[name=age_of_death]").disabled = false');
+      document.querySelector("[name='age_of_death']").disabled = false;
+      //document.querySelector("input[name='age_of_death']").disabled = false;
+      //$(document.body).down("input[name='age_of_death']").removeAttr('disabled','disabled');
+    }
+    console.log('_this.getBirthDate()',this.getBirthDate())
+    console.log('_this.getDeathDate()',this.getDeathDate())
+    console.log('_!this.getBirthDate()',!this.getBirthDate())
+    console.log('_!this.getDeathDate()',!this.getDeathDate())
     this.getGraphics().updateAgeLabel();
     return this.getDeathDate();
+  },
+
+  /**
+     * Replaces the death age with deathAge
+     *
+     *
+     * @method setDeathAge
+     * @param {Age} deathAge
+     */
+  setDeathAge: function(deathAge) {
+    // only set death age if no birth or death date
+   if(!this.getBirthDate() && !this.getDeathDate() ) {
+      this._deathAge =  deathAge;
+      console.log('deathAge', deathAge);
+      console.log('this.getDeathDate()', this.getDeathDate());
+      //this._deathDate && this.setLifeStatus('deceased');
+      this.getGraphics().updateAgeLabel();
+    }
+    return this.getDeathAge();
   },
 
   _isValidCarrierStatus: function(status) {
@@ -530,7 +625,7 @@ var Person = Class.create(AbstractPerson, {
       editor.getDisorderLegend().addCase(disorder.getDisorderID(), disorder.getName(), this.getID());
       this.getDisorders().push(disorder.getDisorderID());
     } else {
-      alert('This person already has the specified disorder');
+      alert(translate('This person already has the specified disorder'));
     }
 
     // if any "real" disorder has been added
@@ -552,7 +647,7 @@ var Person = Class.create(AbstractPerson, {
       this._disorders = this.getDisorders().without(disorderID);
     } else {
       if (disorderID != 'affected') {
-        alert('This person doesn\'t have the specified disorder');
+        alert(translate('This person doesn\'t have the specified disorder'));
       }
     }
   },
@@ -612,7 +707,7 @@ var Person = Class.create(AbstractPerson, {
       editor.getHPOLegend().addCase(hpo.getID(), hpo.getName(), this.getID());
       this.getHPO().push(hpo.getID());
     } else {
-      alert('This person already has the specified phenotype');
+      alert(translate('This person already has the specified phenotype'));
     }
   },
 
@@ -627,7 +722,7 @@ var Person = Class.create(AbstractPerson, {
       editor.getHPOLegend().removeCase(hpoID, this.getID());
       this._hpo = this.getHPO().without(hpoID);
     } else {
-      alert('This person doesn\'t have the specified HPO term');
+      alert(translate('This person doesn\'t have the specified HPO term'));
     }
   },
 
@@ -814,8 +909,9 @@ var Person = Class.create(AbstractPerson, {
 
     return {
       identifier:    {value : this.getID()},
-      first_name:    {value : this.getFirstName()},
       last_name:     {value : this.getLastName()},
+      first_name:    {value : this.getFirstName()},
+      patronymic:    {value : this.getPatronymic()},
       external_id:   {value : this.getExternalID()},
       gender:        {value : this.getGender(), inactive: inactiveGenders},
       date_of_birth: {value : this.getBirthDate(), inactive: this.isFetus()},
@@ -825,6 +921,7 @@ var Person = Class.create(AbstractPerson, {
       adopted:       {value : this.isAdopted(), inactive: cantChangeAdopted},
       state:         {value : this.getLifeStatus(), inactive: inactiveStates},
       date_of_death: {value : this.getDeathDate(), inactive: this.isFetus()},
+      age_of_death: {value : this.getDeathAge(), inactive: !this.isDeceased()},
       comments:      {value : this.getComments(), inactive: false},
       gestation_age: {value : this.getGestationAge(), inactive : !this.isFetus()},
       childlessSelect: {value : this.getChildlessStatus() ? this.getChildlessStatus() : 'none', inactive : childlessInactive},
@@ -856,6 +953,9 @@ var Person = Class.create(AbstractPerson, {
     if (this.getLastName() != '') {
       info['lName'] = this.getLastName();
     }
+    if (this.getPatronymic() != '') {
+      info['patronymic'] = this.getPatronymic();
+    }
     if (this.getExternalID() != '') {
       info['externalID'] = this.getExternalID();
     }
@@ -870,6 +970,9 @@ var Person = Class.create(AbstractPerson, {
     }
     if (this.getDeathDate() != '') {
       info['dod'] = this.getDeathDate().toDateString();
+    }
+    if (this.getDeathAge() != '') {
+      info['doa'] = this.getDeathAge();
     }
     if (this.getGestationAge() != null) {
       info['gestationAge'] = this.getGestationAge();
@@ -915,11 +1018,14 @@ var Person = Class.create(AbstractPerson, {
     this._setDefault();
 
     if($super(info)) {
+      if(info.lName && this.getLastName() != info.lName) {
+        this.setLastName(info.lName);
+      }
       if(info.fName && this.getFirstName() != info.fName) {
         this.setFirstName(info.fName);
       }
-      if(info.lName && this.getLastName() != info.lName) {
-        this.setLastName(info.lName);
+      if(info.patronymic && this.getPatronymic() != info.patronymic) {
+        this.setPatronymic(info.patronymic);
       }
       if (info.externalID && this.getExternalID() != info.externalID) {
         this.setExternalID(info.externalID);
@@ -944,6 +1050,9 @@ var Person = Class.create(AbstractPerson, {
       }
       if(info.dod && this.getDeathDate() != info.dod) {
         this.setDeathDate(info.dod);
+      }
+      if(info.doa && this.getDeathAge() != info.doa) {
+        this.setDeathAge(info.doa);
       }
       if(info.gestationAge && this.getGestationAge() != info.gestationAge) {
         this.setGestationAge(info.gestationAge);

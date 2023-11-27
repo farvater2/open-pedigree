@@ -500,6 +500,7 @@ BaseGraph.prototype = {
   getVertexNameById: function(v) {
     var firstname = this.properties[v].hasOwnProperty('fName') ? this.properties[v]['fName'] : '';
     var lastname  = this.properties[v].hasOwnProperty('lName')  ? this.properties[v]['lName'] : '';
+    var patronymic  = this.properties[v].hasOwnProperty('patronymic')  ? this.properties[v]['patronymic'] : '';
 
     if (firstname != '' && lastname != '' ) {
       firstname += ' ';

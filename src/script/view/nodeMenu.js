@@ -3,6 +3,7 @@ import HPOTerm from 'pedigree/hpoTerm';
 import Helpers from 'pedigree/model/helpers';
 import GraphicHelpers from 'pedigree/view/graphicHelpers';
 import AgeCalc from 'pedigree/view/ageCalc';
+import PedigreeEditorParameters from 'pedigree/pedigreeEditorParameters';
 
 /**
  * NodeMenu is a UI Element containing options for AbstractNode elements
@@ -520,6 +521,10 @@ var NodeMenu = Class.create({
       }
       if (data.values) {
         data.values.each(_generateSelectOption);
+      } else if (data.range_ru && PedigreeEditorParameters.getSetting('language') !== 'eng') {
+        $A($R(data.range_ru.start, data.range_ru.end)).each(function(i) {
+          _generateSelectOption({'actual': i, 'displayed' : i + ' ' + ((((i % 10) == 1) && ((i % 100) != 11)) ? (data.range_ru.item[0]) : (((((i % 10) >= 2) && ((i % 10) <= 4)) && (((i % 100) < 10) || ((i % 100) >= 20))) ? (data.range_ru.item[1]) : (data.range_ru.item[2])))});
+        });
       } else if (data.range) {
         $A($R(data.range.start, data.range.end)).each(function(i) {
           _generateSelectOption({'actual': i, 'displayed' : i + ' ' + data.range.item[+(i!=1)]});

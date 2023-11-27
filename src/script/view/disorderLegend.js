@@ -2,6 +2,7 @@ import Raphael from 'pedigree/raphael';
 import { isInt } from 'pedigree/model/helpers';
 import Disorder from 'pedigree/disorder';
 import Legend from 'pedigree/view/legend';
+import { translate } from 'pedigree/translation';
 
 /**
  * Class responsible for keeping track of disorders and their properties, and for
@@ -14,7 +15,7 @@ import Legend from 'pedigree/view/legend';
 var DisorgerLegend = Class.create( Legend, {
 
   initialize: function($super) {
-    $super('Disorders');
+    $super(translate('Disorders'));
 
     this._disorderCache = {};
 
