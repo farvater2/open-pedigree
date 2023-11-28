@@ -1,5 +1,5 @@
 {
-  "name": "@farvater2/open-pedigree",
+  "name": "@farvater/open-pedigree",
   "version": "1.0.0",
   "description": "A free and open-source genetics pedigree tool powered by PhenoTips®",
   "main": "src/app.js",
@@ -21,6 +21,10 @@
   "license": "LGPL-2.1-only",
   "bugs": {
     "url": "https://github.com/phenotips/open-pedigree/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "homepage": "https://github.com/phenotips/open-pedigree#readme",
   "devDependencies": {
