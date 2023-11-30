@@ -104,7 +104,8 @@ var PedigreeEditor = Class.create({
 
     var saveButton = $('action-save');
     saveButton && saveButton.on('click', function(event) {
-      var _patientDataUrl = '/pedigree/ajax.jsp?action=upsertGenogram';
+      //var _patientDataUrl = '/pedigree/';
+      var _patientDataUrl = '.';
       editor.getView().unmarkAll();
       if (_patientDataUrl) {
         editor.getSaveLoadEngine().save(_patientDataUrl);

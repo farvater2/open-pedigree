@@ -74,8 +74,8 @@ var TemplateSelector = Class.create( {
   show: function() {
     
     console.log('dialog show');
-    editor.id_patient_genetic = Math.floor(Math.random() * 100000);
-    console.log('editor.id_patient_genetic '+editor.id_patient_genetic);
+    editor.id_patient = Math.floor(Math.random() * 100000);
+    console.log('editor.id_patient '+editor.id_patient);
     this.dialog.show();
   },
 

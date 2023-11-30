@@ -148,6 +148,9 @@ var Workspace = Class.create({
   generateTopMenu: function() {
     var menu = new Element('div', {'id' : 'editor-menu'});
 
+    menu.insert(new Element('a', {'class': 'title title__patient_href'})
+        .update('Open Pedigree'));
+
     menu.insert(new Element('a', {'class': 'title', 'href': 'https://github.com/phenotips/open-pedigree'})
         .update('Open Pedigree'));
 

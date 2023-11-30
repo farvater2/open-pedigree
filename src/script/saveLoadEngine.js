@@ -107,7 +107,6 @@ var SaveLoadEngine = Class.create({
     new Ajax.Request(args.patientDataUrl, {
       method: 'POST',
       onCreate: function () {
-        console.log('args', args);
         args.setSaveInProgress(true);
       },
       onComplete: function () {
@@ -115,7 +114,7 @@ var SaveLoadEngine = Class.create({
         me._saveInProgress = false;
       },
       onSuccess: function () { },
-      parameters: { 'id_patient_genetic': args.id_patient_genetic, 'last_name': JSON.parse(args.jsonData).GG[0].prop.lName, 'first_name': JSON.parse(args.jsonData).GG[0].prop.fName, 'patronymic': JSON.parse(args.jsonData).GG[0].prop.patronymic, 'pedigree_data': args.jsonData, 'pedigree_svg': args.svgData }
+      parameters: { 'id_patient': args.id_patient, 'last_name': JSON.parse(args.jsonData).GG[0].prop.lName, 'first_name': JSON.parse(args.jsonData).GG[0].prop.fName, 'patronymic': JSON.parse(args.jsonData).GG[0].prop.patronymic, 'pedigree_data': args.jsonData, 'pedigree_svg': args.svgData }
     });
   },
 
@@ -137,11 +136,11 @@ var SaveLoadEngine = Class.create({
             var rawdata = JSON.parse(response.responseText)[0].pedigree_data;//getSubSelectorTextFromXML(response.responseXML, 'property', 'name', 'data', 'value');
             var jsonData = unescapeRestData(rawdata);
             if (jsonData.trim()) {
-              console.log('[LOAD] recived JSON: ' + JSON.stringify(jsonData));
+              //console.log('[LOAD] recived JSON: ' + JSON.stringify(jsonData));
               args.onSuccess(jsonData);
               //jsonData = editor.getVersionUpdater().updateToCurrentVersion(jsonData);
               //console.log('editor.getVersionUpdater().updateToCurrentVersion(jsonData)');
-              editor.id_patient_genetic = JSON.parse(response.responseText)[0].id_patient_genetic;
+              editor.id_patient= JSON.parse(response.responseText)[0].id_patient;
               didLoadData = true;
             }
           }
@@ -165,12 +164,14 @@ var SaveLoadEngine = Class.create({
       && (this._loadFunction.toString() !== this._defaultLoadFunction.toString());
     this._saveInProgress = false;
 
-    let id_patient_genetic = this.getUrlParameter('id_patient_genetic');
-    if (id_patient_genetic) {
-     // editor.id_patient_genetic = id_patient_genetic;
-      this.load('/pedigree/ajax.jsp?action=getGenogram&id_patient_genetic=' + id_patient_genetic);
-     // this.load('/pedigree/ajax.jsp?action=getGenogram&id_patient_genetic=' + id_patient_genetic);
-    }
+    let id_patient = this.getUrlParameter('id_patient');
+    if (id_patient) {
+      this.load('./' + id_patient);
+      let patient_name = this.getUrlParameter('patient_name');
+      let title__patient_href = document.getElementsByClassName('title__patient_href')[0];
+      title__patient_href.innerText = patient_name;
+      title__patient_href.setAttribute('href', '../patients/' + id_patient);
+    }   
   },
 
   /**
@@ -256,7 +257,7 @@ var SaveLoadEngine = Class.create({
 
     var jsonData = this.serialize();
 
-    console.log('[SAVE] data: ' + JSON.stringify(jsonData));
+    //console.log('[SAVE] data: ' + JSON.stringify(jsonData));
 
     var image = $('canvas');
     var background = image.getElementsByClassName('panning-background')[0];
@@ -266,7 +267,7 @@ var SaveLoadEngine = Class.create({
 
     this._saveFunction({
       patientDataUrl: patientDataUrl,
-      id_patient_genetic: editor.id_patient_genetic || new URLSearchParams(window.location.search).get('id_patient_genetic'),
+      id_patient: editor.id_patient || new URLSearchParams(window.location.search).get('id_patient'),
       jsonData: jsonData,
       setSaveInProgress: this.setSaveInProgress,
       svgData: canvasToSvg(image)

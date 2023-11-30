@@ -1,8 +1,9 @@
 {
   "name": "@farvater/open-pedigree",
-  "version": "1.0.0",
+  "version": "1.0.22",
   "description": "A free and open-source genetics pedigree tool powered by PhenoTips®",
   "main": "src/app.js",
+  "files": ["dist/**","public/**","src/assets/**"],
   "scripts": {
     "build": "webpack -p",
     "test": "eslint --quiet src/**/*.js",

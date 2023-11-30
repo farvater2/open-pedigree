@@ -45,7 +45,8 @@ var LoadSelector = Class.create({
 
     this.hide();
     //editor.getSaveLoadEngine().load('/pedigree/ajax.jsp?action=getGenogram&patient_id=' + editor.patient_id);
-    editor.getSaveLoadEngine().load('/pedigree/ajax.jsp?action=getGenogram&id_patient_genetic=' + editor.id_patient_genetic);
+    editor.getSaveLoadEngine().load('./' + editor.id_patient);
+    //editor.getSaveLoadEngine().load('/pedigree/' + editor.id_patient);
   },
 
   /**
@@ -55,7 +56,8 @@ var LoadSelector = Class.create({
      */
   show: function () {
 
-    var patientsUrl = '/pedigree/ajax.jsp?action=getPatients';
+    var patientsUrl = './getPatients';
+    //var patientsUrl = '/pedigree/getPatients';
 
     var _this = this;
 
@@ -68,19 +70,15 @@ var LoadSelector = Class.create({
         try {
           if (_response && _response.responseText) {
             var response = JSON.parse(_response.responseText);
-            console.log('response', response);
 
             function updateSelector() {
               _this.select.innerHTML = ""
               for (var i = 0; i < response.length; i++) {
                 var item = response[i];
-                console.log('item', item);
                 _this.select.insert(new Element('option', { 'value': item.id }).update(item.fullname));
               }
-              editor.id_patient_genetic = _this.select.value;
+              editor.id_patient = _this.select.value;
             }
-
-            console.log('select', select);
 
             if (!_this.select) {
               
@@ -93,13 +91,13 @@ var LoadSelector = Class.create({
 
               _this.select = select;
               select.observe('change', function (event) {
-                editor.id_patient_genetic = select.value;
+                editor.id_patient = select.value;
                 console.log('select change');
               });
 
               copyURL.observe('click', function (event) {
-                let URL = 'https://fnkc.ru/pedigree/?id_patient_genetic=' + editor.id_patient_genetic;
-                console.log(URL);
+                //let URL = '/pedigree/' + editor.id_patient;
+                let URL = './' + editor.id_patient;
                 navigator.clipboard.writeText(URL);
               });
             }
