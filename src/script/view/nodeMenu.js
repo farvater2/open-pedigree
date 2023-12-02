@@ -162,7 +162,8 @@ var NodeMenu = Class.create({
     // genes
     this.form.select('input.suggest-genes').each(function(item) {
       if (!item.hasClassName('initialized')) {
-        var geneServiceURL = new XWiki.Document('GeneNameService', 'PhenoTips').getURL('get', 'outputSyntax=plain');
+        //var geneServiceURL = new XWiki.Document('GeneNameService', 'PhenoTips').getURL('get', 'outputSyntax=plain');
+        var geneServiceURL ="./GeneNameService?outputSyntax=plain";
         item._suggest = new PhenoTips.widgets.Suggest(item, {
           script: geneServiceURL + '&json=true&',
           varname: 'q',

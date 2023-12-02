@@ -425,8 +425,8 @@ var Person = Class.create(AbstractPerson, {
   setBirthDate: function(newDate) {
     newDate = newDate ? (new Date(newDate)) : '';
     this.setDeathAge('');
-    console.log('document');
-    console.log(document);
+    /*console.log('document');
+    console.log(document);*/
     document.querySelector("[name='age_of_death']").disabled = true;
     if (!newDate || !this.getDeathDate() || newDate.getTime() < this.getDeathDate().getTime()) {
       this._birthDate = newDate;
@@ -435,11 +435,11 @@ var Person = Class.create(AbstractPerson, {
     if (!this.getBirthDate() && !this.getDeathDate()) {
       document.querySelector("[name='age_of_death']").disabled = false;
       //$(document.body).down("input[name='age_of_death']").removeAttr('disabled','disabled');
-    }
+    }/*
     console.log('this.getBirthDate()',this.getBirthDate());
     console.log('!!this.getBirthDate()',!!this.getBirthDate());
     console.log('this.getDeathDate()',this.getDeathDate());
-    console.log('!!this.getDeathDate()',!!this.getDeathDate());
+    console.log('!!this.getDeathDate()',!!this.getDeathDate());*/
   },
 
   /**
@@ -481,15 +481,15 @@ var Person = Class.create(AbstractPerson, {
       this._deathDate && (this.getLifeStatus() == 'alive') && this.setLifeStatus('deceased');
     }
     if (!this.getBirthDate() & !this.getDeathDate()) {
-      console.log('document.querySelector("[name=age_of_death]").disabled = false');
+      //console.log('document.querySelector("[name=age_of_death]").disabled = false');
       document.querySelector("[name='age_of_death']").disabled = false;
       //document.querySelector("input[name='age_of_death']").disabled = false;
       //$(document.body).down("input[name='age_of_death']").removeAttr('disabled','disabled');
     }
-    console.log('_this.getBirthDate()',this.getBirthDate())
+    /*console.log('_this.getBirthDate()',this.getBirthDate())
     console.log('_this.getDeathDate()',this.getDeathDate())
     console.log('_!this.getBirthDate()',!this.getBirthDate())
-    console.log('_!this.getDeathDate()',!this.getDeathDate())
+    console.log('_!this.getDeathDate()',!this.getDeathDate())*/
     this.getGraphics().updateAgeLabel();
     return this.getDeathDate();
   },
@@ -505,8 +505,8 @@ var Person = Class.create(AbstractPerson, {
     // only set death age if no birth or death date
    if(!this.getBirthDate() && !this.getDeathDate() ) {
       this._deathAge =  deathAge;
-      console.log('deathAge', deathAge);
-      console.log('this.getDeathDate()', this.getDeathDate());
+      /*console.log('deathAge', deathAge);
+      console.log('this.getDeathDate()', this.getDeathDate());*/
       //this._deathDate && this.setLifeStatus('deceased');
       this.getGraphics().updateAgeLabel();
     }

@@ -38,7 +38,7 @@ var HPOTerm = Class.create( {
 
   load: function(callWhenReady) {
     var baseServiceURL = HPOTerm.getServiceURL();
-    var queryURL       = baseServiceURL + '&q=id%3A' + HPOTerm.desanitizeID(this._hpoID).replace(':','%5C%3A');
+    var queryURL       = baseServiceURL + '&q=' + HPOTerm.desanitizeID(this._hpoID).replace(':','%5C%3A');
     //console.log("QueryURL: " + queryURL);
     new Ajax.Request(queryURL, {
       method: 'GET',
@@ -84,7 +84,8 @@ HPOTerm.isValidID = function(id) {
 };
 
 HPOTerm.getServiceURL = function() {
-  return new XWiki.Document('SolrService', 'PhenoTips').getURL('get') + '?';
+  //return new XWiki.Document('SolrService', 'PhenoTips').getURL('get') + '?';
+  return "./SolrService?outputSyntax=plain";
 };
 
 export default HPOTerm;

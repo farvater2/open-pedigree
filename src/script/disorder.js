@@ -81,7 +81,8 @@ Disorder.desanitizeID = function(disorderID) {
 };
 
 Disorder.getOMIMServiceURL = function() {
-  return new XWiki.Document('OmimService', 'PhenoTips').getURL('get', 'outputSyntax=plain');
+  return "./OmimService?outputSyntax=plain";
+  //new XWiki.Document('OmimService', 'PhenoTips').getURL('get', 'outputSyntax=plain');
 };
 
 export default Disorder;

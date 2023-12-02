@@ -114,7 +114,7 @@ var SaveLoadEngine = Class.create({
         me._saveInProgress = false;
       },
       onSuccess: function () { },
-      parameters: { 'id_patient': args.id_patient, 'last_name': JSON.parse(args.jsonData).GG[0].prop.lName, 'first_name': JSON.parse(args.jsonData).GG[0].prop.fName, 'patronymic': JSON.parse(args.jsonData).GG[0].prop.patronymic, 'pedigree_data': args.jsonData, 'pedigree_svg': args.svgData }
+      parameters: { 'id_patient': args.id_patient, 'pedigree_data': args.jsonData, 'pedigree_svg': args.svgData }
     });
   },
 
@@ -140,7 +140,13 @@ var SaveLoadEngine = Class.create({
               args.onSuccess(jsonData);
               //jsonData = editor.getVersionUpdater().updateToCurrentVersion(jsonData);
               //console.log('editor.getVersionUpdater().updateToCurrentVersion(jsonData)');
-              editor.id_patient= JSON.parse(response.responseText)[0].id_patient;
+              let prop = JSON.parse(jsonData).GG[0].prop;
+              editor.id_patient= prop.id_patient;
+              let patient_name = [prop.lName, prop.fName, prop.patronymic].join(' ');
+              let title__patient_href = document.getElementsByClassName('title__patient_href')[0];
+              title__patient_href.innerText = patient_name;
+              title__patient_href.setAttribute('href', '../patients/' + editor.id_patient);
+
               didLoadData = true;
             }
           }
@@ -167,10 +173,6 @@ var SaveLoadEngine = Class.create({
     let id_patient = this.getUrlParameter('id_patient');
     if (id_patient) {
       this.load('./' + id_patient);
-      let patient_name = this.getUrlParameter('patient_name');
-      let title__patient_href = document.getElementsByClassName('title__patient_href')[0];
-      title__patient_href.innerText = patient_name;
-      title__patient_href.setAttribute('href', '../patients/' + id_patient);
     }   
   },
 
