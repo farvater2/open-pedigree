@@ -798,6 +798,54 @@ var Person = Class.create(AbstractPerson, {
   getGenes: function() {
     return this._candidateGenes;
   },
+  
+
+  /**
+     * Adds Registry Patient to the list of this node's rpatient.
+     *
+     * @method addRPatient
+     * @param {RPatient} hpo Registry Patient object
+     */
+    
+  addRPatient: function(rpatient) {
+    if (this.getRPatients().indexOf(rpatient) == -1) {
+      editor.getRPatientLegend().addCase(rpatient, rpatient, this.getID());
+      this.getRPatients().push(rpatient);
+    }
+  },
+  /**
+     * Removes rpatient from the list of this node's rpatient
+     *
+     * @method removeGene
+     */
+  removeRPatient: function(rpatient) {
+    if (this.getRPatients().indexOf(rpatient) !== -1) {
+      editor.getRPatientLegend().removeCase(rpatient, this.getID());
+      this._rpatient = this.getRPatients().without(rpatient);
+    }
+  },
+  /**
+     * Sets the list of RPatient to the given list
+     *
+     * @method setRPatient
+     * @param {Array} rpatients List of RPatient objects
+     */
+  setRPatient: function(RPatients) {
+    for(var i = this.getRPatient().length-1; i >= 0; i--) {
+      this.removeRPatient( this.getRPatient()[i] );
+    }
+    for(var i = 0; i < rpatients.length; i++) {
+      this.addRPatient( rpatients[i] );
+    }
+  },
+
+  /**
+     * @method hasRPatient
+     * @param {Number} id Term ID, taken from the RPatient database
+     */
+  hasRPatient: function(id) {
+    return (this.getRPatient().indexOf(id) != -1);
+  },
 
   /**
      * Removes the node and its visuals.
@@ -809,6 +857,7 @@ var Person = Class.create(AbstractPerson, {
     this.setDisorders([]);  // remove disorders form the legend
     this.setHPO([]);
     this.setGenes([]);
+    this.setRPatient([]);
     $super();
   },
 
@@ -912,6 +961,7 @@ var Person = Class.create(AbstractPerson, {
       last_name:     {value : this.getLastName()},
       first_name:    {value : this.getFirstName()},
       patronymic:    {value : this.getPatronymic()},
+      rpatient:      {value : this.getRPatient()},
       external_id:   {value : this.getExternalID()},
       gender:        {value : this.getGender(), inactive: inactiveGenders},
       date_of_birth: {value : this.getBirthDate(), inactive: this.isFetus()},
@@ -989,6 +1039,9 @@ var Person = Class.create(AbstractPerson, {
     if (this.getGenes().length > 0) {
       info['candidateGenes'] = this.getGenes();
     }
+    if (this.getRPatient().length > 0) {
+      info['rpatient'] = this.getRPatient();
+    }
     if (this._twinGroup !== null) {
       info['twinGroup'] = this._twinGroup;
     }
@@ -1041,6 +1094,9 @@ var Person = Class.create(AbstractPerson, {
       }
       if(info.candidateGenes) {
         this.setGenes(info.candidateGenes);
+      }
+      if(info.rpatient) {
+        this.setRPatient(info.rpatient);
       }
       if(info.hasOwnProperty('isAdopted') && this.isAdopted() != info.isAdopted) {
         this.setAdopted(info.isAdopted);

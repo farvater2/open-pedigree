@@ -263,6 +263,33 @@ var NodeMenu = Class.create({
         });
       }
     });
+    // rpatient
+    this.form.select('input.suggest-rpatient').each(function(item) {
+      if (!item.hasClassName('initialized')) {
+        var rpatientServiceURL ="./RPatientService?outputSyntax=plain";
+        item._suggest = new PhenoTips.widgets.Suggest(item, {
+          script: rpatientServiceURL + '&json=true&',
+          varname: 'q',
+          noresults: 'No matching terms',
+          resultsParameter : 'rows',
+          json: true,
+          resultId : 'id',
+          resultValue : 'name',
+          resultInfo : {},
+          enableHierarchy: false,
+          tooltip :false,
+          fadeOnClear : false,
+          timeout : 30000,
+          parentContainer : $('body')
+        });
+        item.addClassName('initialized');
+        document.observe('ms:suggest:containerCreated', function(event) {
+          if (event.memo && event.memo.suggest === item._suggest) {
+            item._suggest.container.setStyle({'overflow': 'auto', 'maxHeight': document.viewport.getHeight() - item._suggest.container.cumulativeOffset().top + 'px'});
+          }
+        });
+      }
+    });
 
     // Update disorder colors
     this._updateDisorderColor = function(id, color) {
@@ -508,6 +535,31 @@ var NodeMenu = Class.create({
       this._attachFieldEventListeners(genePicker, ['custom:selection:changed']);
       return result;
     },
+    'rpatient-picker' : function (data) {
+      var result = this._generateEmptyField(data);
+      var rpatientPicker = new Element('input', {type: 'text', 'class': 'suggest suggest-rpatient', name: data.name});
+      result.insert(rpatientPicker);
+      rpatientPicker._getValue = function() {
+        var results = [];
+        var container = this.up('.field-box');
+        if (container) {
+          container.select('input[type=hidden][name=' + data.name + ']').each(function(item){
+            results.push(item.next('.value') && item.next('.value').firstChild.nodeValue || item.value);
+          });
+        }
+        return [results];
+      }.bind(rpatientPicker);
+      // Forward the 'custom:selection:changed' to the input
+      var _this = this;
+      document.observe('custom:selection:changed', function(event) {
+        if (event.memo && event.memo.fieldName == data.name && event.memo.trigger && event.findElement() != event.memo.trigger && !event.memo.trigger._silent) {
+          Event.fire(event.memo.trigger, 'custom:selection:changed');
+          _this.reposition();
+        }
+      });
+      this._attachFieldEventListeners(rpatientPicker, ['custom:selection:changed']);
+      return result;
+    },
     'select' : function (data) {
       var result = this._generateEmptyField(data);
       var select = new Element('select', {'name' : data.name});
@@ -733,6 +785,20 @@ var NodeMenu = Class.create({
         target._silent = false;
       }
     },
+    'rpatient-picker' : function (container, values) {
+      var _this = this;
+      var target = container.down('input[type=text].suggest-rpatient');
+      if (target && target._suggestPicker) {
+        target._silent = true;
+        target._suggestPicker.clearAcceptedList();
+        if (values) {
+          values.each(function(v) {
+            target._suggestPicker.addItem(v.id, v.value, '');
+          });
+        }
+        target._silent = false;
+      }
+    },
     'select' : function (container, value) {
       var target = container.down('select option[value=' + value + ']');
       if (target) {
@@ -797,6 +863,9 @@ var NodeMenu = Class.create({
     'gene-picker' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
     },
+    'rpatient-picker' : function (container, inactive) {
+      this._toggleFieldVisibility(container, inactive);
+    },
     'select' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
     },
@@ -846,6 +915,9 @@ var NodeMenu = Class.create({
       // FIXME: Not implemented
     },
     'gene-picker' : function (container, inactive) {
+      // FIXME: Not implemented
+    },
+    'rpatient-picker' : function (container, inactive) {
       // FIXME: Not implemented
     },
     'select' : function (container, inactive) {

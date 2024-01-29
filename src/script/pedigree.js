@@ -469,6 +469,13 @@ var PedigreeEditor = Class.create({
         'function' : 'setPatronymic'
       },
       {
+        'name' : 'rpatient',
+        'label' : translate('Patient in registry'),
+        'type' : 'rpatient-picker',
+        'tab': translate('Personal'),
+        'function' : 'setRPatient'
+      },
+      {
         'name' : 'external_id',
         'label': translate('Identifier'),
         'type' : 'text',
