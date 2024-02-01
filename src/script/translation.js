@@ -31,7 +31,7 @@ let dictionary = {
     'Unborn': 'Нерожд.',
     'Aborted': 'Абортир.',
     'Gestation age': 'Срок беременности',
-    'Heredity options': 'Деторождение',
+    'Heredity options': 'Потомство',
     'None': 'Ни один',
     'Childless': 'Бездетный',
     'Infertile': 'Бесплодный',

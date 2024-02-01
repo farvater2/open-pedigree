@@ -9,7 +9,7 @@ import { translate } from './translation';
  * @constructor
  */
 
-  var Controller = Class.create({
+var Controller = Class.create({
   initialize: function() {
     document.observe('pedigree:graph:clear',               this.handleClearGraph);
     document.observe('pedigree:undo',                      this.handleUndo);

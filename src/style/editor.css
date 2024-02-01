@@ -62,6 +62,7 @@
 }
 
 #editor-menu .title {
+  float: left;
   padding: .35em;
   margin: 0 .7em;
 
@@ -82,23 +83,6 @@
   font-weight: bold;
 }
 
-#editor-menu .title.title__patient_href {
-  padding: .35em;
-  margin: 0 .7em;
-
-  padding-left: 10px;
-
-  border-right: 1px solid #ccc;
-  margin-right: 1em;
-  padding-right: 1em;
-}
-#editor-menu .title.title__patient_href::before {
-  content: "\27A5";
-  display: inline-block;
-  transform: rotate(180deg);
-  margin-right: 10px;
-}
-
 #editor-menu .powered-by {
   float: right;
   padding: .35em;
@@ -107,10 +91,6 @@
 
 #editor-menu .powered-by sup {
   font-size: 0.6em;
-}
-
-#editor-menu .load-actions {
-  display: none;
 }
 
 
@@ -250,10 +230,6 @@
  */
 #work-area {
   position: relative;
-
-  /*mih*/
-  height: 100%;
-  font-size: 87.5%;
 }
 
 .legend-box {
