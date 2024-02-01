@@ -114,7 +114,7 @@ var SaveLoadEngine = Class.create({
         me._saveInProgress = false;
       },
       onSuccess: function () { },
-      parameters: { 'id_patient': args.id_patient, 'pedigree_data': args.jsonData, 'pedigree_svg': args.svgData }
+      parameters: { 'id_patient': args.id_patient, 'pedigree_data': args.jsonData/*, 'pedigree_svg': args.svgData*/ }
     });
   },
 
@@ -271,8 +271,8 @@ var SaveLoadEngine = Class.create({
       patientDataUrl: patientDataUrl,
       id_patient: editor.id_patient || new URLSearchParams(window.location.search).get('id_patient'),
       jsonData: jsonData,
-      setSaveInProgress: this.setSaveInProgress,
-      svgData: canvasToSvg(image)
+      setSaveInProgress: this.setSaveInProgress/*,
+      svgData: canvasToSvg(image)*/
     });
     backgroundParent.insertBefore(background, backgroundPosition);
   },
