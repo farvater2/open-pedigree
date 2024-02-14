@@ -71,11 +71,13 @@ Disorder.sanitizeID = function(disorderID) {
   }
   var temp = disorderID.replace(/[\(\[]/g, '_L_');
   temp = temp.replace(/[\)\]]/g, '_J_');
+  temp = temp.replace(/[\,\]]/g, 'ZAPYATAYA');
   return temp.replace(/[^a-zA-Z0-9,;_\-*]/g, '__');
 };
 
 Disorder.desanitizeID = function(disorderID) {
   var temp = disorderID.replace(/__/g, ' ');
+  temp = temp.replace(/ZAPYATAYA/g, ',');
   temp = temp.replace(/_L_/g, '(');
   return temp.replace(/_J_/g, ')');
 };

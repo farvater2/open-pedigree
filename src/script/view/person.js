@@ -3,6 +3,7 @@ import { ChildlessBehavior } from 'pedigree/view/abstractNode';
 import AbstractPerson from 'pedigree/view/abstractPerson';
 import PersonVisuals from 'pedigree/view/personVisuals';
 import HPOTerm from 'pedigree/hpoTerm';
+import RegistryPatient from 'pedigree/registryPatient';
 import Disorder from 'pedigree/disorder';
 import { translate } from 'pedigree/translation';
 
@@ -51,6 +52,8 @@ var Person = Class.create(AbstractPerson, {
     this._gestationAge = '';
     this._isAdopted = false;
     this._externalID = '';
+    this._patientRegistryID = '';
+    //this._rpatients = [];
     this._lifeStatus = 'alive';
     this._childlessStatus = null;
     this._carrierStatus = '';
@@ -309,6 +312,16 @@ var Person = Class.create(AbstractPerson, {
     return (status == 'unborn' || status == 'stillborn'
             || status == 'aborted' || status == 'miscarriage'
             || status == 'alive' || status == 'deceased');
+  },
+
+  /**
+     * Returns True if exist registry petient id.
+     *
+     * @method isPatientRegistryID
+     * @return {Boolean}
+     */
+  isPatientRegistryID: function() {
+    return !!this.getPatientRegistryID();
   },
 
   /**
@@ -789,51 +802,184 @@ var Person = Class.create(AbstractPerson, {
   },
   
 
+
+  /**************************************** */
+
+  /**
+     * Returns a list of all Registry Patients associated with the patient
+     *
+     * @method getRegistryPatient
+     * @return {Array} List of Registry Patient IDs.
+     */
+    /*
+  getRegistryPatient: function() {
+    return this._registryPatient;
+  },
+  */
+
+  /**
+     * Returns a list of Registry Patient
+     *
+     * @method getRegistryPatientForExport
+     * @return {Array} List of human-readable versions of Registry Patient IDs
+     */
+    /*
+  getRegistryPatientForExport: function() {
+    var exportRegistryPatients = this._registryPatient.slice(0);
+    for (var i = 0; i < exportRegistryPatients.length; i++) {
+      exportRegistryPatients[i] = RegistryPatient.desanitizeID(exportRegistryPatients[i]);
+    }
+    return exportRegistryPatients;
+  },
+  */
+
+  /**
+     * Adds Registry Patient to the list of this node's and updates the Legend.
+     *
+     * @method addRegistryPatient
+     * @param {RegistryPatient} registryPatient RegistryPatient object or a free-text name string
+     */
+    /*
+  addRegistryPatient: function(registryPatient) {
+    if (typeof registryPatient != 'object') {
+      registryPatient = editor.getRegistryPatientLegend().getTerm(registryPatient);
+    }
+    if(!this.hasRegistryPatient(registryPatient.getID())) {
+      editor.getRegistryPatientLegend().addCase(registryPatient.getID(), registryPatient.getName(), this.getID());
+      this.getRegistryPatient().push(registryPatient.getID());
+    } else {
+      alert(translate('This person already RegistryPatient'));
+    }
+  },*/
+
+  /**
+     * Removes RegistryPatient from the list of this node's terms and updates the Legend.
+     *
+     * @method removeRegistryPatient
+     * @param {Number} registryPatientID id of the term to be removed
+     */
+    /*
+  removeRegistryPatient: function(registryPatientID) {
+    if(this.hasRegistryPatient(registryPatientID)) {
+      editor.getRegistryPatientLegend().removeCase(registryPatientID, this.getID());
+      this._registryPatient = this.getRegistryPatient().without(registryPatientID);
+    } else {
+      alert(translate('This person doesn\'t have the specified RegistryPatient'));
+    }
+  },*/
+
+  /**
+     * Sets the list of RegistryPatients of this person to the given list
+     *
+     * @method setRegistryPatient
+     * @param {Array} registryPatients List of RegistryPatient objects
+     */
+    /*
+  setRegistryPatient: function(registryPatients) {
+    for(var i = this.getRegistryPatient().length-1; i >= 0; i--) {
+      this.removeRegistryPatient( this.getRegistryPatient()[i] );
+    }
+    for(var i = 0; i < registryPatients.length; i++) {
+      this.addRegistryPatient( registryPatients[i] );
+    }
+  },*/
+
+  /**
+     * @method hasRegistryPatient
+     * @param {Number} id Registry Patient ID, taken from the Registry database
+     */
+    /*
+  hasRegistryPatient: function(id) {
+    return (this.getRegistryPatient().indexOf(id) != -1);
+  },*/
+
+  /***************************************************************** */
+
+
+
   /**
      * Adds Registry Patient to the list of this node's rpatient.
      *
      * @method addRPatient
-     * @param {RPatient} hpo Registry Patient object
+     * @param
      */
-    
+    /*
   addRPatient: function(rpatient) {
     if (this.getRPatients().indexOf(rpatient) == -1) {
       editor.getRPatientLegend().addCase(rpatient, rpatient, this.getID());
       this.getRPatients().push(rpatient);
     }
   },
+  */
   /**
      * Removes rpatient from the list of this node's rpatient
      *
-     * @method removeGene
+     * @method removeRPatient
      */
+    /*
   removeRPatient: function(rpatient) {
     if (this.getRPatients().indexOf(rpatient) !== -1) {
       editor.getRPatientLegend().removeCase(rpatient, this.getID());
-      this._rpatient = this.getRPatients().without(rpatient);
+      this._rpatients = this.getRPatients().without(rpatient);
     }
   },
+  */
   /**
      * Sets the list of RPatient to the given list
      *
      * @method setRPatient
      * @param {Array} rpatients List of RPatient objects
      */
-  setRPatient: function(RPatients) {
-    for(var i = this.getRPatient().length-1; i >= 0; i--) {
-      this.removeRPatient( this.getRPatient()[i] );
+    /*
+  setRPatient: function(rpatients) {
+    for(var i = this.getRPatients().length-1; i >= 0; i--) {
+      this.removeRPatient( this.getRPatients()[i] );
     }
     for(var i = 0; i < rpatients.length; i++) {
       this.addRPatient( rpatients[i] );
     }
   },
+  */
 
   /**
      * @method hasRPatient
      * @param {Number} id Term ID, taken from the RPatient database
      */
+    /*
   hasRPatient: function(id) {
-    return (this.getRPatient().indexOf(id) != -1);
+    return (this.getRPatients().indexOf(id) != -1);
+  },
+  */
+  /**
+     * @method getRPatients
+     * @return {Array} List of rpatients
+     */
+    /*
+  getRPatients: function() {
+    return this._rpatients;
+  },
+*/
+  
+
+  /**
+     * Returns the patientRegistryID of this patients registry
+     *
+     * @method getPatientRegistryID
+     * @return {String}
+     */
+  getPatientRegistryID: function() {
+    return this._patientRegistryID;
+  },
+
+  /**
+     * Replaces the patientRegistryID of this Person with patientRegistryID
+     *
+     * @method setPatientRegistryID
+     * @param patientRegistryID
+     */
+   setPatientRegistryID: function(patientRegistryID) {
+    this._patientRegistryID = patientRegistryID;
+    return patientRegistryID;
   },
 
   /**
@@ -846,7 +992,7 @@ var Person = Class.create(AbstractPerson, {
     this.setDisorders([]);  // remove disorders form the legend
     this.setHPO([]);
     this.setGenes([]);
-    this.setRPatient([]);
+    //this.setRPatient([]);
     $super();
   },
 
@@ -913,7 +1059,12 @@ var Person = Class.create(AbstractPerson, {
     this.getHPO().forEach(function(hpo) {
       var termName = editor.getHPOLegend().getTerm(hpo).getName();
       hpoTerms.push({id: hpo, value: termName});
-    });
+    });/*
+    var registryPatients = [];
+    this.getRegistryPatient().forEach(function(registryPatient) {
+      var termName = editor.getRegistryPatientLegend().getTerm(registryPatient).getName();
+      registryPatients.push({id: registryPatient, value: termName});
+    });*/
 
     var cantChangeAdopted = this.isFetus() || editor.getGraph().hasToBeAdopted(this.getID());
 
@@ -947,16 +1098,17 @@ var Person = Class.create(AbstractPerson, {
 
     return {
       identifier:    {value : this.getID()},
-      last_name:     {value : this.getLastName()},
-      first_name:    {value : this.getFirstName()},
-      patronymic:    {value : this.getPatronymic()},
-      rpatient:      {value : this.getRPatient()},
-      external_id:   {value : this.getExternalID()},
-      gender:        {value : this.getGender(), inactive: inactiveGenders},
-      date_of_birth: {value : this.getBirthDate(), inactive: this.isFetus()},
+      last_name:     {value : this.getLastName(), disabled: this.isPatientRegistryID()},
+      first_name:    {value : this.getFirstName(), disabled: this.isPatientRegistryID()},
+      patronymic:    {value : this.getPatronymic(), disabled: this.isPatientRegistryID()},
+      patientRegistryID:     {value : this.getPatientRegistryID()},
+      //registry_patient:     {value : registryPatients},
+      external_id:   {value : this.getExternalID(), disabled: this.isPatientRegistryID()},
+      gender:        {value : this.getGender(), inactive: inactiveGenders, disabled: this.isPatientRegistryID()},
+      date_of_birth: {value : this.getBirthDate(), inactive: this.isFetus(), disabled: this.isPatientRegistryID()},
       carrier:       {value : this.getCarrierStatus(), disabled: inactiveCarriers},
-      disorders:     {value : disorders},
-      candidate_genes: {value : this.getGenes()},
+      disorders:     {value : disorders, disabled: this.isPatientRegistryID()},
+      candidate_genes: {value : this.getGenes(), disabled: this.isPatientRegistryID()},
       adopted:       {value : this.isAdopted(), inactive: cantChangeAdopted},
       state:         {value : this.getLifeStatus(), inactive: inactiveStates},
       date_of_death: {value : this.getDeathDate(), inactive: this.isFetus()},
@@ -967,7 +1119,7 @@ var Person = Class.create(AbstractPerson, {
       placeholder:   {value : false, inactive: true },
       monozygotic:   {value : this.getMonozygotic(), inactive: inactiveMonozygothic, disabled: disableMonozygothic },
       evaluated:     {value : this.getEvaluated() },
-      hpo_positive:  {value : hpoTerms},
+      hpo_positive:  {value : hpoTerms, disabled: this.isPatientRegistryID()},
       nocontact:     {value : this.getLostContact(), inactive: inactiveLostContact}
     };
   },
@@ -1024,13 +1176,19 @@ var Person = Class.create(AbstractPerson, {
     }
     if (this.getHPO().length > 0) {
       info['hpoTerms'] = this.getHPOForExport();
-    }
+    }/*
+    if (this.getRegistryPatient().length > 0) {
+      info['registryPatients'] = this.getRegistryPatientForExport();
+    }*/
     if (this.getGenes().length > 0) {
       info['candidateGenes'] = this.getGenes();
     }
-    if (this.getRPatient().length > 0) {
-      info['rpatient'] = this.getRPatient();
-    }
+    if (this.getPatientRegistryID() != '') {
+      info['patientRegistryID'] = this.getPatientRegistryID();
+    }/*
+    if (this.getRPatients().length > 0) {
+      info['rpatients'] = this.getRPatients();
+    }*/
     if (this._twinGroup !== null) {
       info['twinGroup'] = this._twinGroup;
     }
@@ -1081,12 +1239,18 @@ var Person = Class.create(AbstractPerson, {
       if(info.hpoTerms) {
         this.setHPO(info.hpoTerms);
       }
+      if(info.registryPatients) {
+        this.setRegistryPatient(info.registryPatients);
+      }
       if(info.candidateGenes) {
         this.setGenes(info.candidateGenes);
       }
-      if(info.rpatient) {
-        this.setRPatient(info.rpatient);
-      }
+      if(info.patientRegistryID && this.getPatientRegistryID() != info.patientRegistryID) {
+        this.setPatientRegistryID(info.patientRegistryID);
+      }/*
+      if(info.rpatients) {
+        this.setRPatient(info.rpatients);
+      }*/
       if(info.hasOwnProperty('isAdopted') && this.isAdopted() != info.isAdopted) {
         this.setAdopted(info.isAdopted);
       }

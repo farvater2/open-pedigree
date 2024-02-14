@@ -339,6 +339,7 @@ PedigreeExport.internalToJSONPropertyMapping = {
   'ethnicities':   'ethnicities',
   'carrierStatus': 'carrierStatus',
   'externalID':    'externalId',
+  /*'rpatients':     'rpatients',*/
   'gender':        'sex',
   'numPersons':    'numPersons',
   'hpoTerms':      'hpoTerms',

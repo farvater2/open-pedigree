@@ -113,8 +113,12 @@ var SaveLoadEngine = Class.create({
         args.setSaveInProgress(false);
         me._saveInProgress = false;
       },
-      onSuccess: function () { },
-      parameters: { 'id_patient': args.id_patient, 'pedigree_data': args.jsonData/*, 'pedigree_svg': args.svgData*/ }
+      onSuccess: function () { 
+        // перезагружаем для подгрузки данных из регистра
+        location = window.location
+       },
+      /* id_patient для новых пациентов */
+      parameters: { 'id_patient': args.id_patient, 'pedigree_data': args.jsonData, 'id_family': args.id_family, 'pedigree_svg': args.svgData }
     });
   },
 
@@ -134,6 +138,7 @@ var SaveLoadEngine = Class.create({
           //console.log("[Data from LOAD]");
           if (response && response.responseText) {
             var rawdata = JSON.parse(response.responseText)[0].pedigree_data;//getSubSelectorTextFromXML(response.responseXML, 'property', 'name', 'data', 'value');
+            
             var jsonData = unescapeRestData(rawdata);
             if (jsonData.trim()) {
               //console.log('[LOAD] recived JSON: ' + JSON.stringify(jsonData));
@@ -141,8 +146,11 @@ var SaveLoadEngine = Class.create({
               //jsonData = editor.getVersionUpdater().updateToCurrentVersion(jsonData);
               //console.log('editor.getVersionUpdater().updateToCurrentVersion(jsonData)');
               let prop = JSON.parse(jsonData).GG[0].prop;
-              editor.id_patient= prop.id_patient;
-              let patient_name = [prop.lName, prop.fName, prop.patronymic].join(' ');
+              //editor.id_patient = prop.id_patient;
+              editor.id_patient = JSON.parse(response.responseText)[0].id_patient;
+              let patient_name = JSON.parse(response.responseText)[0].patient_name;
+              editor.id_family = JSON.parse(response.responseText)[0].id_family;
+              //let patient_name = [prop.lName, prop.fName, prop.patronymic].join(' ');
               let title__patient_href = document.getElementsByClassName('title__patient_href')[0];
               title__patient_href.innerText = patient_name;
               title__patient_href.setAttribute('href', '../patients/' + editor.id_patient);
@@ -171,8 +179,9 @@ var SaveLoadEngine = Class.create({
     this._saveInProgress = false;
 
     let id_patient = this.getUrlParameter('id_patient');
+    let id_family = this.getUrlParameter('id_family');
     if (id_patient) {
-      this.load('./' + id_patient);
+      this.load('./' + id_patient + '?id_family=' + id_family);
     }   
   },
 
@@ -270,9 +279,10 @@ var SaveLoadEngine = Class.create({
     this._saveFunction({
       patientDataUrl: patientDataUrl,
       id_patient: editor.id_patient || new URLSearchParams(window.location.search).get('id_patient'),
+      id_family: editor.id_family,
       jsonData: jsonData,
-      setSaveInProgress: this.setSaveInProgress/*,
-      svgData: canvasToSvg(image)*/
+      setSaveInProgress: this.setSaveInProgress,
+      svgData: canvasToSvg(image)
     });
     backgroundParent.insertBefore(background, backgroundPosition);
   },

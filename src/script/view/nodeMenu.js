@@ -1,5 +1,6 @@
 import Disorder from 'pedigree/disorder';
 import HPOTerm from 'pedigree/hpoTerm';
+import RegistryPatient from 'pedigree/registryPatient';
 import Helpers from 'pedigree/model/helpers';
 import GraphicHelpers from 'pedigree/view/graphicHelpers';
 import AgeCalc from 'pedigree/view/ageCalc';
@@ -264,9 +265,11 @@ var NodeMenu = Class.create({
       }
     });
     // rpatient
+    /*
     this.form.select('input.suggest-rpatient').each(function(item) {
+      console.log('item',item);
       if (!item.hasClassName('initialized')) {
-        var rpatientServiceURL ="./RPatientService?outputSyntax=plain";
+        var rpatientServiceURL = RegistryPatient.getServiceURL();
         item._suggest = new PhenoTips.widgets.Suggest(item, {
           script: rpatientServiceURL + '&json=true&',
           varname: 'q',
@@ -289,7 +292,7 @@ var NodeMenu = Class.create({
           }
         });
       }
-    });
+    });*/
 
     // Update disorder colors
     this._updateDisorderColor = function(id, color) {
@@ -534,21 +537,24 @@ var NodeMenu = Class.create({
       });
       this._attachFieldEventListeners(genePicker, ['custom:selection:changed']);
       return result;
-    },
-    'rpatient-picker' : function (data) {
+    },/*
+    'registry_patient-picker' : function (data) {
+      console.log("registry_patient-picker data", data);
       var result = this._generateEmptyField(data);
-      var rpatientPicker = new Element('input', {type: 'text', 'class': 'suggest suggest-rpatient', name: data.name});
-      result.insert(rpatientPicker);
-      rpatientPicker._getValue = function() {
+      console.log("registry_patient-picker result", result);
+      var registryPatientPicker = new Element('input', {type: 'text', 'class': 'suggest suggest-rpatient', name: data.name});
+      result.insert(registryPatientPicker);
+      registryPatientPicker._getValue = function() {
         var results = [];
         var container = this.up('.field-box');
         if (container) {
           container.select('input[type=hidden][name=' + data.name + ']').each(function(item){
-            results.push(item.next('.value') && item.next('.value').firstChild.nodeValue || item.value);
+            results.push(new RegistryPatient(item.value, item.next('.value') && item.next('.value').firstChild.nodeValue || item.value));
+            //results.push(item.next('.value') && item.next('.value').firstChild.nodeValue || item.value);
           });
         }
         return [results];
-      }.bind(rpatientPicker);
+      }.bind(registryPatientPicker);
       // Forward the 'custom:selection:changed' to the input
       var _this = this;
       document.observe('custom:selection:changed', function(event) {
@@ -557,9 +563,9 @@ var NodeMenu = Class.create({
           _this.reposition();
         }
       });
-      this._attachFieldEventListeners(rpatientPicker, ['custom:selection:changed']);
+      this._attachFieldEventListeners(registryPatientPicker, ['custom:selection:changed']);
       return result;
-    },
+    },*/
     'select' : function (data) {
       var result = this._generateEmptyField(data);
       var select = new Element('select', {'name' : data.name});
@@ -784,7 +790,7 @@ var NodeMenu = Class.create({
         }
         target._silent = false;
       }
-    },
+    },/*
     'rpatient-picker' : function (container, values) {
       var _this = this;
       var target = container.down('input[type=text].suggest-rpatient');
@@ -798,7 +804,7 @@ var NodeMenu = Class.create({
         }
         target._silent = false;
       }
-    },
+    },*/
     'select' : function (container, value) {
       var target = container.down('select option[value=' + value + ']');
       if (target) {
@@ -818,6 +824,14 @@ var NodeMenu = Class.create({
       container.addClassName('hidden');
     } else {
       container.removeClassName('hidden');
+    }
+  },
+
+  _toggleFieldDisability : function(container, doDisable) {
+    if (doDisable) {
+      container.addClassName('disabled');
+    } else {
+      container.removeClassName('disabled');
     }
   },
 
@@ -862,10 +876,10 @@ var NodeMenu = Class.create({
     },
     'gene-picker' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
-    },
+    },/*
     'rpatient-picker' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
-    },
+    },*/
     'select' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
     },
@@ -908,18 +922,21 @@ var NodeMenu = Class.create({
     'date-picker' : function (container, inactive) {
       // FIXME: Not implemented
     },
-    'disease-picker' : function (container, inactive) {
-      // FIXME: Not implemented
+    'disease-picker' : function (container, disable) {
+      // FIXED by Starikov M.
+      this._toggleFieldDisability(container, disable);
     },
-    'hpo-picker' : function (container, inactive) {
-      // FIXME: Not implemented
+    'hpo-picker' : function (container, disable) {
+      // FIXED by Starikov M.
+      this._toggleFieldDisability(container, disable);
     },
-    'gene-picker' : function (container, inactive) {
-      // FIXME: Not implemented
-    },
+    'gene-picker' : function (container, disable) {
+      // FIXED by Starikov M.
+      this._toggleFieldDisability(container, disable);
+    },/*
     'rpatient-picker' : function (container, inactive) {
       // FIXME: Not implemented
-    },
+    },*/
     'select' : function (container, inactive) {
       // FIXME: Not implemented
     },

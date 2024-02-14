@@ -65,17 +65,21 @@ var HPOTerm = Class.create( {
  * For that purpose these symbols in IDs are converted in memory (but not in the stored pedigree) to some underscores.
  */
 HPOTerm.sanitizeID = function(id) {
-  var temp = id.replace(/[\(\[]/g, '_L_');
-  temp = temp.replace(/[\)\]]/g, '_J_');
-  temp = temp.replace(/[:]/g, '_C_');
+  var temp = id.replace(/[\(\[]/g, 'LEVAYASKOBKA');
+  temp = temp.replace(/[\)\]]/g, 'PRAVAYASKOBKA');
+  temp = temp.replace(/[:]/g, 'DVOETOCHIE');
+  temp = temp.replace(/[,]/g, 'ZAPYATAYA');
+  temp = temp.replace(/[/]/g, 'PRYAMOISLASH');
   return temp.replace(/[^a-zA-Z0-9,;_\-*]/g, '__');
 };
 
 HPOTerm.desanitizeID = function(id) {
   var temp = id.replace(/__/g, ' ');
-  temp = temp.replace(/_C_/g, ':');
-  temp = temp.replace(/_L_/g, '(');
-  return temp.replace(/_J_/g, ')');
+  temp = temp.replace(/DVOETOCHIE/g, ':');
+  temp = temp.replace(/ZAPYATAYA/g, ',');
+  temp = temp.replace(/PRYAMOISLASH/g, '/');
+  temp = temp.replace(/LEVAYASKOBKA/g, '(');
+  return temp.replace(/PRAVAYASKOBKA/g, ')');
 };
 
 HPOTerm.isValidID = function(id) {

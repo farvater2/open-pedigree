@@ -279,7 +279,7 @@
  */
 .menu-box {
   position: absolute;
-  width: 350px;
+  width: 375px;
   color: #000000;
   z-index: 100000;
 }
@@ -523,7 +523,7 @@
 
 .menu-box .accepted-suggestions li {
   line-height: 1em;
-  padding: .2em 1em .1em 0;
+  padding: .2em 1.5em .1em 0;
   font-size: 85%
 }
 
@@ -684,6 +684,22 @@
 .menu-box .field-childlessSelect {
   padding: 0.5em 0 0.5em;
 }
+
+.menu-box .field-disorders.disabled input,
+.menu-box .field-disorders.disabled .delete-tool{
+  display: none !important;
+}
+
+.menu-box .field-candidate_genes.disabled input,
+.menu-box .field-candidate_genes.disabled .delete-tool{
+  display: none !important;
+}
+
+.menu-box .field-hpo_positive.disabled input,
+.menu-box .field-hpo_positive.disabled .delete-tool{
+  display: none !important;
+}
+
 
 /* ===========================================
  * NODE TYPE OPTIONS

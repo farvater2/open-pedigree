@@ -6,6 +6,7 @@ import Helpers from 'pedigree/model/helpers';
 import Workspace from 'pedigree/view/workspace';
 import DisorderLegend from 'pedigree/view/disorderLegend';
 import HPOLegend from 'pedigree/view/hpoLegend';
+import RegistryPatientLegend from 'pedigree/view/registryPatientLegend';
 import GeneLegend from 'pedigree/view/geneLegend';
 import ExportSelector from 'pedigree/view/exportSelector';
 import ImportSelector from 'pedigree/view/importSelector';
@@ -68,6 +69,7 @@ var PedigreeEditor = Class.create({
     this._disorderLegend = new DisorderLegend();
     this._geneLegend = new GeneLegend();
     this._hpoLegend = new HPOLegend();
+    this._registryPatientLegend = new RegistryPatientLegend();
     this._fhirTerminologyHelper = options.fhirTerminologyHelper || new DefaultFhirTerminologyHelper();
 
     this._view = new View();
@@ -295,6 +297,15 @@ var PedigreeEditor = Class.create({
   },
 
   /**
+     * @method getRegistryPatientLegend
+     * @return {Legend} Responsible for managing and displaying the RegistryPatient legend
+     */
+    /*
+  getRegistryPatientLegend: function() {
+    return this._registryPatientLegend;
+  },*/
+
+  /**
      * @method getGeneLegend
      * @return {Legend} Responsible for managing and displaying the candidate genes legend
      */
@@ -434,6 +445,13 @@ var PedigreeEditor = Class.create({
         'tab': translate('Personal')
       },
       {
+        'name' : 'patientRegistryID',
+        'label' : translate('Patient in registry'),
+        'type' : 'text',
+        'tab': translate('Personal'),
+        'function' : 'setPatientRegistryID'
+      },
+      {
         'name' : 'gender',
         'label' : translate('Gender'),
         'type' : 'radio',
@@ -467,14 +485,14 @@ var PedigreeEditor = Class.create({
         'type' : 'text',
         'tab': translate('Personal'),
         'function' : 'setPatronymic'
-      },
+      },/*
       {
-        'name' : 'rpatient',
+        'name' : 'registry_patient',
         'label' : translate('Patient in registry'),
-        'type' : 'rpatient-picker',
+        'type' : 'registry_patient-picker',
         'tab': translate('Personal'),
-        'function' : 'setRPatient'
-      },
+        'function' : 'setRegistryPatient'
+      },*/
       {
         'name' : 'external_id',
         'label': translate('Identifier'),
