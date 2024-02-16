@@ -1,16 +1,16 @@
-import RegistryPatient from 'pedigree/RegistryPatient';
+import PatientRegistry from 'pedigree/PatientRegistry';
 import Legend from 'pedigree/view/legend';
 import { translate } from 'pedigree/translation';
 
 /**
- * Class responsible for keeping track of RegistryPatient and their properties, and for
+ * Class responsible for keeping track of PatientRegistry and their properties, and for
  * caching disorders data as loaded from the Registry database.
  * This information is graphically displayed in a 'Legend' box
  *
- * @class RegistryPatientLegend
+ * @class PatientRegistryLegend
  * @constructor
  */
-var RegistryPatientLegend = Class.create( Legend, {
+var PatientRegistryLegend = Class.create( Legend, {
 
   initialize: function($super) {
     $super(translate('Patients'));
@@ -19,26 +19,25 @@ var RegistryPatientLegend = Class.create( Legend, {
   },
 
   _getPrefix: function(id) {
-    return 'registrypatient';
+    return 'patientregistry';
   },
 
   /**
-     * Returns the RegistryPatient object with the given ID. If object is not in cache yet
+     * Returns the PatientRegistry object with the given ID. If object is not in cache yet
      * returns a newly created one which may have the term name & other attributes not loaded yet
      *
      * @method getTerm
      * @return {Object}
      */
-  getTerm: function(registryPatientID) {
-    console.log("registryPatientID__",registryPatientID);
-    registryPatientID = RegistryPatient.sanitizeID(registryPatientID);
-    if (!this._termCache.hasOwnProperty(registryPatientID)) {
+  getTerm: function(patientRegistryID) {
+    patientRegistryID = PatientRegistry.sanitizeID(patientRegistryID);
+    if (!this._termCache.hasOwnProperty(patientRegistryID)) {
       var whenNameIsLoaded = function() {
-        this._updateTermName(registryPatientID);
+        this._updateTermName(patientRegistryID);
       };
-      this._termCache[registryPatientID] = new RegistryPatient(registryPatientID, null, whenNameIsLoaded.bind(this));
+      this._termCache[patientRegistryID] = new PatientRegistry(patientRegistryID, null, whenNameIsLoaded.bind(this));
     }
-    return this._termCache[registryPatientID];
+    return this._termCache[patientRegistryID];
   },
 
   /**
@@ -53,26 +52,26 @@ var RegistryPatientLegend = Class.create( Legend, {
   },
 
   /**
-     * Registers an occurrence of a RegistryPatient.
+     * Registers an occurrence of a PatientRegistry.
      *
      * @method addCase
      * @param {Number|String} id ID for this term taken from the Registry database
-     * @param {String} name The description of the RegistryPatient
-     * @param {Number} nodeID ID of the Person who has this RegistryPatient
+     * @param {String} name The description of the PatientRegistry
+     * @param {Number} nodeID ID of the Person who has this PatientRegistry
      */
   addCase: function($super, id, name, nodeID) {
     if (!this._termCache.hasOwnProperty(id)) {
-      this._termCache[id] = new RegistryPatient(id, name);
+      this._termCache[id] = new PatientRegistry(id, name);
     }
 
     $super(id, name, nodeID);
   },
 
   /**
-     * Updates the displayed RegistryPatient name for the given RegistryPatient
+     * Updates the displayed PatientRegistry name for the given PatientRegistry
      *
      * @method _updateTermName
-     * @param {Number} id The identifier of the RegistryPatient to update
+     * @param {Number} id The identifier of the PatientRegistry to update
      * @private
      */
   _updateTermName: function(id) {
@@ -82,4 +81,4 @@ var RegistryPatientLegend = Class.create( Legend, {
   }
 });
 
-export default RegistryPatientLegend;
+export default PatientRegistryLegend;

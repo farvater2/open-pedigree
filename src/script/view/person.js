@@ -3,7 +3,7 @@ import { ChildlessBehavior } from 'pedigree/view/abstractNode';
 import AbstractPerson from 'pedigree/view/abstractPerson';
 import PersonVisuals from 'pedigree/view/personVisuals';
 import HPOTerm from 'pedigree/hpoTerm';
-import RegistryPatient from 'pedigree/registryPatient';
+import PatientRegistry from 'pedigree/patientRegistry';
 import Disorder from 'pedigree/disorder';
 import { translate } from 'pedigree/translation';
 
@@ -52,8 +52,7 @@ var Person = Class.create(AbstractPerson, {
     this._gestationAge = '';
     this._isAdopted = false;
     this._externalID = '';
-    this._patientRegistryID = '';
-    this._registryPatient = [];
+    this._patientRegistry = [];
     this._lifeStatus = 'alive';
     this._childlessStatus = null;
     this._carrierStatus = '';
@@ -321,7 +320,7 @@ var Person = Class.create(AbstractPerson, {
      * @return {Boolean}
      */
   isPatientRegistryID: function() {
-    return !!this.getPatientRegistryID();
+    return !!this.getPatientRegistry().length;
   },
 
   /**
@@ -808,187 +807,89 @@ var Person = Class.create(AbstractPerson, {
   /**
      * Returns a list of all Registry Patients associated with the patient
      *
-     * @method getRegistryPatient
+     * @method getPatientRegistry
      * @return {Array} List of Registry Patient IDs.
      */
     
-  getRegistryPatient: function() {
-    return this._registryPatient;
+  getPatientRegistry: function() {
+    return this._patientRegistry;
   },
   
 
   /**
-     * Returns a list of Registry Patient
+     * Returns a list of Registry Patient  
      *
-     * @method getRegistryPatientForExport
+     * @method getPatientRegistryForExport
      * @return {Array} List of human-readable versions of Registry Patient IDs
      */
     
-  getRegistryPatientForExport: function() {
-    var exportRegistryPatients = this._registryPatient.slice(0);
-    for (var i = 0; i < exportRegistryPatients.length; i++) {
-      exportRegistryPatients[i] = RegistryPatient.desanitizeID(exportRegistryPatients[i]);
-    }
-    //return exportRegistryPatients;
-    return exportRegistryPatients[0];
+  getPatientRegistryForExport: function() {
+    return PatientRegistry.desanitizeID(this._patientRegistry[0]);
   },
   
 
   /**
      * Adds Registry Patient to the list of this node's and updates the Legend.
      *
-     * @method addRegistryPatient
-     * @param {RegistryPatient} registryPatient RegistryPatient object or a free-text name string
+     * @method addPatientRegistry
+     * @param {PatientRegistry} patientRegistry PatientRegistry object or a free-text name string
      */
     
-  addRegistryPatient: function(registryPatient) {
-    if (typeof registryPatient != 'object') {
-      registryPatient = editor.getRegistryPatientLegend().getTerm(registryPatient);
+  addPatientRegistry: function(patientRegistry) {
+    if (typeof patientRegistry != 'object') {
+      patientRegistry = editor.getPatientRegistryLegend().getTerm(patientRegistry);
     }
-    if(!this.hasRegistryPatient(registryPatient.getID())) {
-      editor.getRegistryPatientLegend().addCase(registryPatient.getID(), registryPatient.getName(), this.getID());
-      this.getRegistryPatient().push(registryPatient.getID());
-      console.log("registryPatient.getName()",registryPatient.getName());
+    if(!this.hasPatientRegistry(patientRegistry.getID())) {
+      editor.getPatientRegistryLegend().addCase(patientRegistry.getID(), patientRegistry.getName(), this.getID());
+      this.getPatientRegistry().push(patientRegistry.getID());
     } else {
-      alert(translate('This person already RegistryPatient'));
+      alert(translate('This person already PatientRegistry'));
     }
   },
 
   /**
-     * Removes RegistryPatient from the list of this node's terms and updates the Legend.
+     * Removes PatientRegistry from the list of this node's terms and updates the Legend.
      *
-     * @method removeRegistryPatient
-     * @param {Number} registryPatientID id of the term to be removed
+     * @method removePatientRegistry
+     * @param {Number} patientRegistryID id of the term to be removed
      */
     
-  removeRegistryPatient: function(registryPatientID) {
-    if(this.hasRegistryPatient(registryPatientID)) {
-      editor.getRegistryPatientLegend().removeCase(registryPatientID, this.getID());
-      this._registryPatient = this.getRegistryPatient().without(registryPatientID);
+  removePatientRegistry: function(patientRegistryID) {
+    if(this.hasPatientRegistry(patientRegistryID)) {
+      editor.getPatientRegistryLegend().removeCase(patientRegistryID, this.getID());
+      this._patientRegistry = this.getPatientRegistry().without(patientRegistryID);
     } else {
-      alert(translate('This person doesn\'t have the specified RegistryPatient'));
+      alert(translate('This person doesn\'t have the specified PatientRegistry'));
     }
   },
 
   /**
-     * Sets the list of RegistryPatients of this person to the given list
+     * Sets the list of patientRegistry_arr of this person to the given list
      *
-     * @method setRegistryPatient
-     * @param {Array} registryPatients List of RegistryPatient objects
+     * @method setPatientRegistry
+     * @param {Array} patientRegistry_arr List of PatientRegistry objects
      */
     
-  setRegistryPatient: function(registryPatients) {
-    for(var i = this.getRegistryPatient().length-1; i >= 0; i--) {
-      this.removeRegistryPatient( this.getRegistryPatient()[i] );
+  setPatientRegistry: function(patientRegistry_arr) {
+    for(var i = this.getPatientRegistry().length-1; i >= 0; i--) {
+      this.removePatientRegistry( this.getPatientRegistry()[i] );
     }
-    
-    for(var i = 0; i < registryPatients.length; i++) {
-
-      if (i === registryPatients.length - 1) {
-      this.addRegistryPatient( registryPatients[i] );
-      console.log("registryPatients[i]",registryPatients[i]);
-      }
+    if (patientRegistry_arr.length) {
+      this.addPatientRegistry( patientRegistry_arr[patientRegistry_arr.length - 1] );
     }
   },
 
   /**
-     * @method hasRegistryPatient
+     * @method hasPatientRegistry
      * @param {Number} id Registry Patient ID, taken from the Registry database
      */
 
-  hasRegistryPatient: function(id) {
-    return (this.getRegistryPatient().indexOf(id) != -1);
+  hasPatientRegistry: function(id) {
+    return (this.getPatientRegistry().indexOf(id) != -1);
   },
 
   /***************************************************************** */
-
-
-
-  /**
-     * Adds Registry Patient to the list of this node's rpatient.
-     *
-     * @method addRPatient
-     * @param
-     */
-    /*
-  addRPatient: function(rpatient) {
-    if (this.getRPatients().indexOf(rpatient) == -1) {
-      editor.getRPatientLegend().addCase(rpatient, rpatient, this.getID());
-      this.getRPatients().push(rpatient);
-    }
-  },
-  */
-  /**
-     * Removes rpatient from the list of this node's rpatient
-     *
-     * @method removeRPatient
-     */
-    /*
-  removeRPatient: function(rpatient) {
-    if (this.getRPatients().indexOf(rpatient) !== -1) {
-      editor.getRPatientLegend().removeCase(rpatient, this.getID());
-      this._rpatients = this.getRPatients().without(rpatient);
-    }
-  },
-  */
-  /**
-     * Sets the list of RPatient to the given list
-     *
-     * @method setRPatient
-     * @param {Array} rpatients List of RPatient objects
-     */
-    /*
-  setRPatient: function(rpatients) {
-    for(var i = this.getRPatients().length-1; i >= 0; i--) {
-      this.removeRPatient( this.getRPatients()[i] );
-    }
-    for(var i = 0; i < rpatients.length; i++) {
-      this.addRPatient( rpatients[i] );
-    }
-  },
-  */
-
-  /**
-     * @method hasRPatient
-     * @param {Number} id Term ID, taken from the RPatient database
-     */
-    /*
-  hasRPatient: function(id) {
-    return (this.getRPatients().indexOf(id) != -1);
-  },
-  */
-  /**
-     * @method getRPatients
-     * @return {Array} List of rpatients
-     */
-    /*
-  getRPatients: function() {
-    return this._rpatients;
-  },
-*/
   
-
-  /**
-     * Returns the patientRegistryID of this patients registry
-     *
-     * @method getPatientRegistryID
-     * @return {String}
-     */
-  getPatientRegistryID: function() {
-    return this._patientRegistryID;
-  },
-
-  /**
-     * Replaces the patientRegistryID of this Person with patientRegistryID
-     *
-     * @method setPatientRegistryID
-     * @param patientRegistryID
-     */
-   setPatientRegistryID: function(patientRegistryID) {
-    this._patientRegistryID = patientRegistryID;
-    return patientRegistryID;
-  },
-
   /**
      * Removes the node and its visuals.
      *
@@ -999,7 +900,7 @@ var Person = Class.create(AbstractPerson, {
     this.setDisorders([]);  // remove disorders form the legend
     this.setHPO([]);
     this.setGenes([]);
-    this.setRegistryPatient([]);
+    this.setPatientRegistry([]);
     $super();
   },
 
@@ -1067,11 +968,10 @@ var Person = Class.create(AbstractPerson, {
       var termName = editor.getHPOLegend().getTerm(hpo).getName();
       hpoTerms.push({id: hpo, value: termName});
     });
-    var registryPatients = [];
-    this.getRegistryPatient().forEach(function(registryPatient) {
-      var termName = editor.getRegistryPatientLegend().getTerm(registryPatient).getName();
-      console.log("termName",termName);
-      registryPatients.push({id: registryPatient, value: termName});
+    var patientRegistry_arr = [];
+    this.getPatientRegistry().forEach(function(patientRegistry) {
+      var termName = editor.getPatientRegistryLegend().getTerm(patientRegistry).getName();
+      patientRegistry_arr.push({id: patientRegistry, value: termName});
     });
 
     var cantChangeAdopted = this.isFetus() || editor.getGraph().hasToBeAdopted(this.getID());
@@ -1109,8 +1009,7 @@ var Person = Class.create(AbstractPerson, {
       last_name:     {value : this.getLastName(), disabled: this.isPatientRegistryID()},
       first_name:    {value : this.getFirstName(), disabled: this.isPatientRegistryID()},
       patronymic:    {value : this.getPatronymic(), disabled: this.isPatientRegistryID()},
-      patientRegistryID:     {value : this.getPatientRegistryID()},
-      registry_patient:     {value : registryPatients},
+      registry_patient:     {value : patientRegistry_arr},
       external_id:   {value : this.getExternalID(), disabled: this.isPatientRegistryID()},
       gender:        {value : this.getGender(), inactive: inactiveGenders, disabled: this.isPatientRegistryID()},
       date_of_birth: {value : this.getBirthDate(), inactive: this.isFetus(), disabled: this.isPatientRegistryID()},
@@ -1185,18 +1084,12 @@ var Person = Class.create(AbstractPerson, {
     if (this.getHPO().length > 0) {
       info['hpoTerms'] = this.getHPOForExport();
     }
-    if (this.getRegistryPatient().length > 0) {
-      info['registryPatients'] = this.getRegistryPatientForExport();
+    if (this.getPatientRegistry().length > 0) {
+      info['patientRegistryID'] = this.getPatientRegistryForExport();
     }
     if (this.getGenes().length > 0) {
       info['candidateGenes'] = this.getGenes();
     }
-    if (this.getPatientRegistryID() != '') {
-      info['patientRegistryID'] = this.getPatientRegistryID();
-    }/*
-    if (this.getRPatients().length > 0) {
-      info['rpatients'] = this.getRPatients();
-    }*/
     if (this._twinGroup !== null) {
       info['twinGroup'] = this._twinGroup;
     }
@@ -1247,19 +1140,12 @@ var Person = Class.create(AbstractPerson, {
       if(info.hpoTerms) {
         this.setHPO(info.hpoTerms);
       }
-      if(info.registryPatients) {
-        //this.setRegistryPatient(info.registryPatients);
-        this.setRegistryPatient([info.registryPatients]);
+      if(info.patientRegistryID) {
+        this.setPatientRegistry([info.patientRegistryID]);
       }
       if(info.candidateGenes) {
         this.setGenes(info.candidateGenes);
       }
-      if(info.patientRegistryID && this.getPatientRegistryID() != info.patientRegistryID) {
-        this.setPatientRegistryID(info.patientRegistryID);
-      }/*
-      if(info.rpatients) {
-        this.setRPatient(info.rpatients);
-      }*/
       if(info.hasOwnProperty('isAdopted') && this.isAdopted() != info.isAdopted) {
         this.setAdopted(info.isAdopted);
       }

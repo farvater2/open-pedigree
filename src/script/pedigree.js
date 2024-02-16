@@ -6,7 +6,7 @@ import Helpers from 'pedigree/model/helpers';
 import Workspace from 'pedigree/view/workspace';
 import DisorderLegend from 'pedigree/view/disorderLegend';
 import HPOLegend from 'pedigree/view/hpoLegend';
-import RegistryPatientLegend from 'pedigree/view/registryPatientLegend';
+import PatientRegistryLegend from 'pedigree/view/patientRegistryLegend';
 import GeneLegend from 'pedigree/view/geneLegend';
 import ExportSelector from 'pedigree/view/exportSelector';
 import ImportSelector from 'pedigree/view/importSelector';
@@ -69,7 +69,7 @@ var PedigreeEditor = Class.create({
     this._disorderLegend = new DisorderLegend();
     this._geneLegend = new GeneLegend();
     this._hpoLegend = new HPOLegend();
-    this._registryPatientLegend = new RegistryPatientLegend();
+    this._patientRegistryLegend = new PatientRegistryLegend();
     this._fhirTerminologyHelper = options.fhirTerminologyHelper || new DefaultFhirTerminologyHelper();
 
     this._view = new View();
@@ -297,12 +297,12 @@ var PedigreeEditor = Class.create({
   },
 
   /**
-     * @method getRegistryPatientLegend
-     * @return {Legend} Responsible for managing and displaying the RegistryPatient legend
+     * @method getPatientRegistryLegend
+     * @return {Legend} Responsible for managing and displaying the PatientRegistry legend
      */
     
-  getRegistryPatientLegend: function() {
-    return this._registryPatientLegend;
+  getPatientRegistryLegend: function() {
+    return this._patientRegistryLegend;
   },
 
   /**
@@ -445,11 +445,11 @@ var PedigreeEditor = Class.create({
         'tab': translate('Personal')
       },
       {
-        'name' : 'patientRegistryID',
+        'name' : 'registry_patient',
         'label' : translate('Patient in registry'),
-        'type' : 'text',
+        'type' : 'registry_patient-picker',
         'tab': translate('Personal'),
-        'function' : 'setPatientRegistryID'
+        'function' : 'setPatientRegistry'
       },
       {
         'name' : 'gender',
@@ -485,13 +485,6 @@ var PedigreeEditor = Class.create({
         'type' : 'text',
         'tab': translate('Personal'),
         'function' : 'setPatronymic'
-      },
-      {
-        'name' : 'registry_patient',
-        'label' : translate('Patient in registry'),
-        'type' : 'registry_patient-picker',
-        'tab': translate('Personal'),
-        'function' : 'setRegistryPatient'
       },
       {
         'name' : 'external_id',

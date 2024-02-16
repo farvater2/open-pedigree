@@ -586,6 +586,26 @@
   display: table-cell;
 }
 
+.field-box.field-registry_patient ul.accepted-suggestions {
+  position: absolute;
+  top: 66px;
+  width: calc(100% - 40px);
+  background-color: #EEE;
+}
+.field-box.field-registry_patient ul.accepted-suggestions li {
+  padding: 7px 5px;
+  box-sizing: border-box;
+  height: 29px;
+}
+/* for hide li acceptFreeText */
+ul.xlist.suggestList li:last-child {
+  display: none;
+}
+
+[id^=patientregistry] .disorder-cases-container {
+  display: none;
+}
+
 .menu-box .field-first_name {
   width: 48%;
   float: right;

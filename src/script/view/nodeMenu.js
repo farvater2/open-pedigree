@@ -1,6 +1,6 @@
 import Disorder from 'pedigree/disorder';
 import HPOTerm from 'pedigree/hpoTerm';
-import RegistryPatient from 'pedigree/registryPatient';
+import PatientRegistry from 'pedigree/patientRegistry';
 import Helpers from 'pedigree/model/helpers';
 import GraphicHelpers from 'pedigree/view/graphicHelpers';
 import AgeCalc from 'pedigree/view/ageCalc';
@@ -266,9 +266,8 @@ var NodeMenu = Class.create({
     });
     // registry_patient
     this.form.select('input.suggest-registry_patient').each(function(item) {
-      console.log('item',item);
       if (!item.hasClassName('initialized')) {
-        var rpatientServiceURL = RegistryPatient.getServiceURL();
+        var rpatientServiceURL = PatientRegistry.getServiceURL();
         item._suggest = new PhenoTips.widgets.Suggest(item, {
           script: rpatientServiceURL + '&json=true&',
           varname: 'q',
@@ -551,25 +550,19 @@ var NodeMenu = Class.create({
       return result;
     },
     'registry_patient-picker' : function (data) {
-      console.log("registry_patient-picker data", data);
       var result = this._generateEmptyField(data);
-      console.log("registry_patient-picker result", result);
-      var registryPatientPicker = new Element('input', {type: 'text', 'class': 'suggest suggest-registry_patient', name: data.name});
-      result.insert(registryPatientPicker);
-      registryPatientPicker._getValue = function() {
+      var patientRegistryPicker = new Element('input', {type: 'text', 'class': 'suggest suggest-registry_patient', name: data.name});
+      result.insert(patientRegistryPicker);
+      patientRegistryPicker._getValue = function() {
         var results = [];
         var container = this.up('.field-box');
         if (container) {
           container.select('input[type=hidden][name=' + data.name + ']').each(function(item){
-            //results = [];
-            console.log("item", item);
-            console.log("results", results);
-            results.push(new RegistryPatient(item.value, item.next('.value') && item.next('.value').firstChild.nodeValue || item.value));
-            //results.push(item.next('.value') && item.next('.value').firstChild.nodeValue || item.value);
+            results.push(new PatientRegistry(item.value, item.next('.value') && item.next('.value').firstChild.nodeValue || item.value));
           });
         }
         return [results];
-      }.bind(registryPatientPicker);
+      }.bind(patientRegistryPicker);
       // Forward the 'custom:selection:changed' to the input
       var _this = this;
       document.observe('custom:selection:changed', function(event) {
@@ -578,8 +571,7 @@ var NodeMenu = Class.create({
           _this.reposition();
         }
       });
-      this._attachFieldEventListeners(registryPatientPicker, ['custom:selection:changed']);
-      console.log("result", result);
+      this._attachFieldEventListeners(patientRegistryPicker, ['custom:selection:changed']);
       return result;
     },
     'select' : function (data) {
@@ -813,12 +805,10 @@ var NodeMenu = Class.create({
       if (target && target._suggestPicker) {
         target._silent = true;
         target._suggestPicker.clearAcceptedList();
-        console.log("values",values);
         if (values) {
           //let v = values[values.length - 1];
           values.each(function(v) {
             target._suggestPicker.clearAcceptedList();
-            console.log("v.id, v.value",v.id, v.value);
             target._suggestPicker.addItem(v.id, v.value, '');
           });
         }

@@ -702,7 +702,6 @@ var View = Class.create({
 
       timer.printSinceLast('=== highlight & update handles runtime: ');
       timer2.printSinceLast('=== Total apply changes runtime: ');
-      console.log('applyChanges end');
       this.addGenerationNumber();
 
     } catch (err) {

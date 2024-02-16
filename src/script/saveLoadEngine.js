@@ -126,7 +126,6 @@ var SaveLoadEngine = Class.create({
     var _this = this;
     var didLoadData = false;
 
-    console.log('_defaultLoadFunction');
     new Ajax.Request(args.patientDataUrl, {
       method: 'GET',
       onCreate: function () {
