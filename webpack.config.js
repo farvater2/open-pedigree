@@ -9,7 +9,7 @@ module.exports = {
     filename: 'pedigree.min.js',
     path: path.resolve(__dirname, 'dist'),
   },
-
+  devtool: 'source-map',
   externals: [
     'XWiki', // XWiki JS library
     'Class', // PrototypeJS
@@ -47,12 +47,12 @@ module.exports = {
       {
         test: /\.(png|svg|jpg|gif)$/,
         use: [{
-         loader: 'file-loader',
-         options: {
-           outputPath: 'assets',
-           publicPath: 'dist/assets',
-         }
-       }]
+          loader: 'file-loader',
+          options: {
+            outputPath: 'assets',
+            publicPath: 'dist/assets',
+          }
+        }]
       }
     ]
   },
@@ -76,9 +76,9 @@ module.exports = {
   },
 
   resolve: {
-  	alias: {
+    alias: {
       'pedigree': path.resolve(__dirname, 'src/script/'),
       'vendor': path.resolve(__dirname, 'public/vendor/'),
-  	}
+    }
   }
 };

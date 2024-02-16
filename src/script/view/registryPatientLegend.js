@@ -13,7 +13,7 @@ import { translate } from 'pedigree/translation';
 var RegistryPatientLegend = Class.create( Legend, {
 
   initialize: function($super) {
-    $super(translate('RegistryPatients'));
+    $super(translate('Patients'));
 
     this._termCache = {};
   },
@@ -30,6 +30,7 @@ var RegistryPatientLegend = Class.create( Legend, {
      * @return {Object}
      */
   getTerm: function(registryPatientID) {
+    console.log("registryPatientID__",registryPatientID);
     registryPatientID = RegistryPatient.sanitizeID(registryPatientID);
     if (!this._termCache.hasOwnProperty(registryPatientID)) {
       var whenNameIsLoaded = function() {

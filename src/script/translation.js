@@ -54,6 +54,7 @@ let dictionary = {
     'Clinical': 'Клинические',
     'Candidate Genes': 'Гены-кандидаты',
     'Phenotypes': 'Фенотипы',
+    'Patients': 'Пациенты',
 
     'Please select a pedigree template': 'Пожалуйста, выберите шаблон родословной',
     'Loading list of templates...': 'Загрузка списка шаблонов...',

@@ -264,9 +264,8 @@ var NodeMenu = Class.create({
         });
       }
     });
-    // rpatient
-    /*
-    this.form.select('input.suggest-rpatient').each(function(item) {
+    // registry_patient
+    this.form.select('input.suggest-registry_patient').each(function(item) {
       console.log('item',item);
       if (!item.hasClassName('initialized')) {
         var rpatientServiceURL = RegistryPatient.getServiceURL();
@@ -285,6 +284,19 @@ var NodeMenu = Class.create({
           timeout : 30000,
           parentContainer : $('body')
         });
+        if (typeof(PhenoTips.widgets.SuggestPicker) != 'undefined') {
+          item._suggestPicker = new PhenoTips.widgets.SuggestPicker(item, item._suggest, {
+            'showKey' : true,
+            'showTooltip' : false,
+            'showDeleteTool' : true,
+            'enableSort' : false,
+            'showClearTool' : false,
+            'inputType': 'hidden',
+            'listInsertionElt' : 'input',
+            'listInsertionPosition' : 'after',
+            'acceptFreeText' : true
+          });
+        }
         item.addClassName('initialized');
         document.observe('ms:suggest:containerCreated', function(event) {
           if (event.memo && event.memo.suggest === item._suggest) {
@@ -292,7 +304,7 @@ var NodeMenu = Class.create({
           }
         });
       }
-    });*/
+    });
 
     // Update disorder colors
     this._updateDisorderColor = function(id, color) {
@@ -537,18 +549,21 @@ var NodeMenu = Class.create({
       });
       this._attachFieldEventListeners(genePicker, ['custom:selection:changed']);
       return result;
-    },/*
+    },
     'registry_patient-picker' : function (data) {
       console.log("registry_patient-picker data", data);
       var result = this._generateEmptyField(data);
       console.log("registry_patient-picker result", result);
-      var registryPatientPicker = new Element('input', {type: 'text', 'class': 'suggest suggest-rpatient', name: data.name});
+      var registryPatientPicker = new Element('input', {type: 'text', 'class': 'suggest suggest-registry_patient', name: data.name});
       result.insert(registryPatientPicker);
       registryPatientPicker._getValue = function() {
         var results = [];
         var container = this.up('.field-box');
         if (container) {
           container.select('input[type=hidden][name=' + data.name + ']').each(function(item){
+            //results = [];
+            console.log("item", item);
+            console.log("results", results);
             results.push(new RegistryPatient(item.value, item.next('.value') && item.next('.value').firstChild.nodeValue || item.value));
             //results.push(item.next('.value') && item.next('.value').firstChild.nodeValue || item.value);
           });
@@ -564,8 +579,9 @@ var NodeMenu = Class.create({
         }
       });
       this._attachFieldEventListeners(registryPatientPicker, ['custom:selection:changed']);
+      console.log("result", result);
       return result;
-    },*/
+    },
     'select' : function (data) {
       var result = this._generateEmptyField(data);
       var select = new Element('select', {'name' : data.name});
@@ -790,21 +806,25 @@ var NodeMenu = Class.create({
         }
         target._silent = false;
       }
-    },/*
-    'rpatient-picker' : function (container, values) {
+    },
+    'registry_patient-picker' : function (container, values) {
       var _this = this;
-      var target = container.down('input[type=text].suggest-rpatient');
+      var target = container.down('input[type=text].suggest-registry_patient');
       if (target && target._suggestPicker) {
         target._silent = true;
         target._suggestPicker.clearAcceptedList();
+        console.log("values",values);
         if (values) {
+          //let v = values[values.length - 1];
           values.each(function(v) {
+            target._suggestPicker.clearAcceptedList();
+            console.log("v.id, v.value",v.id, v.value);
             target._suggestPicker.addItem(v.id, v.value, '');
           });
         }
         target._silent = false;
       }
-    },*/
+    },
     'select' : function (container, value) {
       var target = container.down('select option[value=' + value + ']');
       if (target) {
@@ -876,10 +896,10 @@ var NodeMenu = Class.create({
     },
     'gene-picker' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
-    },/*
-    'rpatient-picker' : function (container, inactive) {
+    },
+    'registry_patient-picker' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
-    },*/
+    },
     'select' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
     },
@@ -933,10 +953,10 @@ var NodeMenu = Class.create({
     'gene-picker' : function (container, disable) {
       // FIXED by Starikov M.
       this._toggleFieldDisability(container, disable);
-    },/*
-    'rpatient-picker' : function (container, inactive) {
+    },
+    'registry_patient-picker' : function (container, inactive) {
       // FIXME: Not implemented
-    },*/
+    },
     'select' : function (container, inactive) {
       // FIXME: Not implemented
     },

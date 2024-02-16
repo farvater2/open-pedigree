@@ -300,10 +300,10 @@ var PedigreeEditor = Class.create({
      * @method getRegistryPatientLegend
      * @return {Legend} Responsible for managing and displaying the RegistryPatient legend
      */
-    /*
+    
   getRegistryPatientLegend: function() {
     return this._registryPatientLegend;
-  },*/
+  },
 
   /**
      * @method getGeneLegend
@@ -485,14 +485,14 @@ var PedigreeEditor = Class.create({
         'type' : 'text',
         'tab': translate('Personal'),
         'function' : 'setPatronymic'
-      },/*
+      },
       {
         'name' : 'registry_patient',
         'label' : translate('Patient in registry'),
         'type' : 'registry_patient-picker',
         'tab': translate('Personal'),
         'function' : 'setRegistryPatient'
-      },*/
+      },
       {
         'name' : 'external_id',
         'label': translate('Identifier'),
