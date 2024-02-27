@@ -540,7 +540,7 @@ var PedigreeEditor = Class.create({
         'label' : translate('Date of birth'),
         'type' : 'date-picker',
         'tab': translate('Personal'),
-        'format' : 'dd/MM/yyyy',
+        'format' : 'dd.MM.yyyy',
         'function' : 'setBirthDate'
       },
       {
@@ -548,7 +548,7 @@ var PedigreeEditor = Class.create({
         'label' : translate('Date of death'),
         'type' : 'date-picker',
         'tab': translate('Personal'),
-        'format' : 'dd/MM/yyyy',
+        'format' : 'dd.MM.yyyy',
         'function' : 'setDeathDate'
       },
       {

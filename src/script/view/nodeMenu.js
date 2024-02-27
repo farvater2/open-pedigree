@@ -108,6 +108,15 @@ var NodeMenu = Class.create({
     var crtYear = new Date().getFullYear();
     window.dateTimePicker = new XWiki.widgets.DateTimePicker({
       year_range: [crtYear - 99, crtYear + 1],
+
+      // Fix: 27.02.2023
+      // hide date-picker if input field disabled
+      after_show : function() {
+        if (this.hasClassName('disabled')) {
+          document.querySelectorAll(".calendar_date_select").forEach(el => el.hide());
+        }
+      },
+
       after_navigate : function(date) {
         this._selector.updateSelectedDate({day: date.getDate(), month: date.getMonth(), year : date.getYear() + 1900}, false);
       }
@@ -472,6 +481,7 @@ var NodeMenu = Class.create({
         return [this.alt && Date.parseISO_8601(this.alt)];
       }.bind(datePicker);
       this._attachFieldEventListeners(datePicker, ['xwiki:date:changed']);
+      console.log(datePicker);
       return result;
     },
     'disease-picker' : function (data) {
@@ -926,11 +936,18 @@ var NodeMenu = Class.create({
         target.disabled = disabled;
       }
     },
-    'textarea' : function (container, inactive) {
+    'textarea' : function (container, disable) {
       // FIXME: Not implemented
     },
-    'date-picker' : function (container, inactive) {
-      // FIXME: Not implemented
+    'date-picker' : function (container, disable) {
+      // FIXED by Starikov M.
+      var target = container.down('input[type=text]');
+      if (disable) {
+        target.removeClassName('xwiki-date');
+      } else {
+        target.addClassName('xwiki-date');
+      }
+      this._toggleFieldDisability(target, disable);
     },
     'disease-picker' : function (container, disable) {
       // FIXED by Starikov M.
