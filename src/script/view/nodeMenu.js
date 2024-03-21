@@ -481,7 +481,6 @@ var NodeMenu = Class.create({
         return [this.alt && Date.parseISO_8601(this.alt)];
       }.bind(datePicker);
       this._attachFieldEventListeners(datePicker, ['xwiki:date:changed']);
-      console.log(datePicker);
       return result;
     },
     'disease-picker' : function (data) {

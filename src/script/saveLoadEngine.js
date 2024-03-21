@@ -115,6 +115,7 @@ var SaveLoadEngine = Class.create({
       },
       onSuccess: function () { 
         // перезагружаем для подгрузки данных из регистра
+        location.reload();
         location = window.location
        },
       /* id_patient для новых пациентов */
@@ -276,7 +277,7 @@ var SaveLoadEngine = Class.create({
     backgroundParent.removeChild(background);
 
     this._saveFunction({
-      patientDataUrl: patientDataUrl,
+      patientDataUrl: editor.id_family? patientDataUrl + '/' + editor.id_family : patientDataUrl,
       id_patient: editor.id_patient || new URLSearchParams(window.location.search).get('id_patient'),
       id_family: editor.id_family,
       jsonData: jsonData,
@@ -288,7 +289,7 @@ var SaveLoadEngine = Class.create({
 
   _displayData: function (jsonData) {
     // update the json to the current version, then load it in the current interface 
-    console.log('2editor.getVersionUpdater().updateToCurrentVersion(jsonData)');
+    //console.log('2editor.getVersionUpdater().updateToCurrentVersion(jsonData)');
     this.createGraphFromSerializedData(
       editor.getVersionUpdater().updateToCurrentVersion(jsonData)
     );
