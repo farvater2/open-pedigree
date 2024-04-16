@@ -113,10 +113,13 @@ var SaveLoadEngine = Class.create({
         args.setSaveInProgress(false);
         me._saveInProgress = false;
       },
-      onSuccess: function () { 
+      onSuccess: function (response) { 
+        const data = response.responseJSON;
         // перезагружаем для подгрузки данных из регистра
-        location.reload();
-        location = window.location
+        window.location=window.location.href.split('?')[0] + `?id_family=${data.id_family}&id_patient=${data.id_patient}`
+        //location.reload(`./pedigree/?id_family=${data.id_family}&id_patient=${data.id_patient}`);
+        //location.reload();
+        //location = window.location
        },
       /* id_patient для новых пациентов */
       parameters: { 'id_patient': args.id_patient, 'pedigree_data': args.jsonData, 'id_family': args.id_family, 'pedigree_svg': args.svgData }
@@ -181,7 +184,11 @@ var SaveLoadEngine = Class.create({
     let id_patient = this.getUrlParameter('id_patient');
     let id_family = this.getUrlParameter('id_family');
     if (id_patient) {
-      this.load('./' + id_patient + '?id_family=' + id_family);
+      if (id_family) {
+        this.load('./' + id_patient + '?id_family=' + id_family);
+      } else {
+        this.load('./' + id_patient);
+      }
     }   
   },
 
@@ -195,7 +202,7 @@ var SaveLoadEngine = Class.create({
   },
 
   createGraphFromSerializedData: function (JSONString, noUndo, centerAround0) {
-    console.log('---- load: parsing data ----', JSONString);
+    //console.log('---- load: parsing data ----', JSONString);
     document.fire('pedigree:load:start');
 
     try {
@@ -277,7 +284,8 @@ var SaveLoadEngine = Class.create({
     backgroundParent.removeChild(background);
 
     this._saveFunction({
-      patientDataUrl: editor.id_family? patientDataUrl + '/' + editor.id_family : patientDataUrl,
+      patientDataUrl: editor.id_family ? patientDataUrl + '/' + editor.id_family : patientDataUrl,
+      //patientDataUrl: patientDataUrl,
       id_patient: editor.id_patient || new URLSearchParams(window.location.search).get('id_patient'),
       id_family: editor.id_family,
       jsonData: jsonData,
@@ -321,7 +329,7 @@ var SaveLoadEngine = Class.create({
         return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
       }
     }
-    return false;
+    return undefined;
   }
 });
 
